@@ -14,7 +14,7 @@ class RegisterForm(FlaskForm):
         # perchè email_address_to_check.data ".data" ???
         email_address = User.query.filter_by(email_address=email_address_to_check.data).first()
         if email_address:
-            raise ValidationError('Email Adress already exists! Please try a different username')
+            raise ValidationError('Email Adress already exists! Please try a different username') 
      
     
     username = StringField(label='User Name:', validators=[Length(min=2,max=30), DataRequired()])
