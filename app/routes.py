@@ -48,6 +48,4 @@ def login_page():
             return redirect(url_for('market'))
         else:
             flash(f'Username and password are not match! Please try again', category='danger')
-
-            
     return render_template('login.html', form=form)
