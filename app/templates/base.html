@@ -11,7 +11,32 @@
   <body>
     {% include 'partials/navbar.html' %}
 
-    <main class="container p-3">{% block content %}{% endblock content %}</main>
+    
+    <main class="container p-3">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div id="liveAlertPlaceholder"></div>
+            <!-- <button type="button" class="m1-2 mb-1 close" id="liveAlertBtn"data-dismiss="alert" aria-label="Close"> -->
+              <!-- <span aria-hidden="true">&times;</span> -->
+            <!-- </button> -->
+          
+
+          <div class="alert alert-{{category}} alert-dismissible w-50 m-auto" role="alert">
+              <div>{{message}}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+      
+      {% block content %}
+      
+      
+      {% endblock content %}
+      
+      
+    </main>
 
     
   </body>
