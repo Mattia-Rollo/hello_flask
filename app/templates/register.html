@@ -24,9 +24,13 @@ Register Page
     
     {{ form.password2.label(class='form-label pt-3') }}
     {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+
+   
     
     {{ form.submit(class='btn btn-primary my-3 w-100')}}
    
+     <div>Already have an account?</div>
+    <div><a class="btn btn-secondary my-2" href="{{ url_for('login_page')}}">Login</a></div>
 </form>
 
 <!-- {{ form.username }} -->
