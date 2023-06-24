@@ -1,0 +1,34 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+Register Page
+{% endblock%} 
+
+{% block content %}
+
+<h1 class="text-center">Register form</h1>
+
+
+<form method="POST" class="form-register w-50 text-center m-auto" style="color:white">
+   
+    {{ form.username.label(class='form-label pt-3') }}
+    {{ form.username(class="form-control", placeholder="username") }}
+    
+    {{ form.email_address.label(class='form-label pt-3') }}
+    {{ form.email_address(class="form-control", placeholder="Email") }}
+   
+    {{ form.password1.label(class='form-label pt-3') }}
+    {{ form.password1(class="form-control", placeholder="Password") }}
+    
+    {{ form.password2.label(class='form-label pt-3') }}
+    {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+    
+    {{ form.submit(class='btn btn-primary my-3 w-100')}}
+   
+</form>
+
+<!-- {{ form.username }} -->
+
+
+
+{% endblock content %}
