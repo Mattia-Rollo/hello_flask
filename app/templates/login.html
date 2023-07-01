@@ -1,0 +1,31 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+La casa 
+{% endblock%} 
+
+{% block content %}
+
+<h1>Login</h1>
+
+<form method="POST" class="form-signin w-50 text-center m-auto" style="color:white" novalidate>
+    
+    {{ form.hidden_tag() }}
+   
+    {{ form.username.label(class='form-label pt-3') }}
+    {{ form.username(class="form-control", placeholder="username") }}
+    
+   
+    {{ form.password.label(class='form-label pt-3') }}
+    {{ form.password(class="form-control", placeholder="Password") }}
+    
+    
+    {{ form.submit(class='btn btn-primary my-3 w-100')}}
+
+    <div>Do not have an account?</div>
+    <div><a class="btn btn-secondary my-2" href="{{ url_for('register_page')}}">Register</a></div>
+   
+</form>
+
+
+{% endblock content %}
