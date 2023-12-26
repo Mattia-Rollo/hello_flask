@@ -46,7 +46,7 @@
                        Welcome, {{ current_user.username}}
                     </a>
                     <ul class="dropdown-menu ">
-                      <li><a class="dropdown-item" href="#">logout</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('logout') }}">logout</a></li>
                     </ul>
             </li>
             </li>

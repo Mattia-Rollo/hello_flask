@@ -6,7 +6,11 @@ La casa
 
 {% block content %}
 
-<h1>Benvenuto {{name}} {{surname}}!</h1>
+{% if current_user.is_authenticated %}
+    <h1>Bentornato {{current_user.username}}</h1>
+{% else %}
+  <h1>Benvenuto è un piacere avere ospite come ospite </h1>
+{% endif %}
 <a href="contacts">contatti</a>
 
 {% endblock content %}
