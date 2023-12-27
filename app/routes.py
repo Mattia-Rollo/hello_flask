@@ -20,7 +20,8 @@ def contacts():
 
 @app.route("/market")
 def market():
-    items = Item.query.all()
+    items = current_user.items
+    # items = Item.query.filter_by(owner=current_user.id).all()
     return render_template("market.html", items=items)
 
 
