@@ -2,7 +2,7 @@ from app import app, db
 from flask import render_template, redirect, url_for, flash
 from app.models import Item, User
 from app.forms import RegisterForm, LoginForm
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 name = "Mattia"
 surname = "Rollo"
@@ -19,6 +19,7 @@ def contacts():
 
 
 @app.route("/market")
+@login_required
 def market():
     items = current_user.items
     # items = Item.query.filter_by(owner=current_user.id).all()
@@ -36,6 +37,11 @@ def register_page():
         )
         db.session.add(user_to_create)
         db.session.commit()
+        
+        # Login automatico dell'utente appena registrato
+        login_user(user_to_create)
+        flash(f"Registrazione completata! Benvenuto {user_to_create.username}!", category="success")
+        
         return redirect(url_for("market"))
     if form.errors != {}:  # if there are not errors from the validations
         for err_msg in form.errors.values():
