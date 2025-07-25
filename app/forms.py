@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, TextAreaField, IntegerField
+from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, NumberRange
 from app.models import User
 
 
@@ -27,3 +27,16 @@ class LoginForm(FlaskForm):
     username = StringField(label="User Name:", validators=[DataRequired()])
     password = PasswordField(label="Password:", validators=[DataRequired()])
     submit = SubmitField(label='Log In')
+
+class PurchaseItemForm(FlaskForm):
+    submit = SubmitField(label='Acquista!')
+
+class SellItemForm(FlaskForm):
+    submit = SubmitField(label='Vendi!')
+
+class AddItemForm(FlaskForm):
+    name = StringField(label='Nome Prodotto:', validators=[Length(min=2, max=30), DataRequired()])
+    price = IntegerField(label='Prezzo ($):', validators=[DataRequired(), NumberRange(min=1, max=10000)])
+    barcode = StringField(label='Codice a Barre:', validators=[Length(min=12, max=12), DataRequired()])
+    description = TextAreaField(label='Descrizione:', validators=[Length(min=10, max=1000), DataRequired()])
+    submit = SubmitField(label='Aggiungi Prodotto')

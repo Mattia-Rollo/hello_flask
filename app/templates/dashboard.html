@@ -1,0 +1,137 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+Dashboard - Flask Market
+{% endblock%} 
+
+{% block content %}
+
+<div class="mb-4">
+    <h2><i class="fas fa-chart-bar me-2"></i>Dashboard di {{ current_user.username }}</h2>
+    <p class="text-muted">Panoramica delle tue attività sul market</p>
+</div>
+
+<div class="row mb-4">
+    <!-- Statistiche Personali -->
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-wallet fa-2x mb-2"></i>
+                <h4>{{ current_user.prettier_budget }}</h4>
+                <p class="mb-0">Saldo Attuale</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-box fa-2x mb-2"></i>
+                <h4>{{ owned_items_count }}</h4>
+                <p class="mb-0">Prodotti Posseduti</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body text-center">
+                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                <h4>${{ total_value }}</h4>
+                <p class="mb-0">Valore Inventario</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-store fa-2x mb-2"></i>
+                <h4>{{ available_items }}</h4>
+                <p class="mb-0">Prodotti Disponibili</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Azioni Rapide -->
+    <div class="col-lg-6 mb-4">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Azioni Rapide</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('market') }}" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart me-2"></i>Vai al Market
+                    </a>
+                    <a href="{{ url_for('add_item') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Aggiungi Prodotto
+                    </a>
+                    <a href="{{ url_for('home_page') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Torna alla Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistiche Market -->
+    <div class="col-lg-6 mb-4">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Statistiche Market</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-success">{{ available_items }}</h4>
+                        <small class="text-muted">Disponibili</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info">{{ total_items - available_items }}</h4>
+                        <small class="text-muted">Venduti</small>
+                    </div>
+                </div>
+                <hr class="border-secondary">
+                <div class="text-center">
+                    <h5 class="text-warning">{{ total_items }}</h5>
+                    <small class="text-muted">Totale Prodotti nel Sistema</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sezione Info Account -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informazioni Account</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Username:</strong> {{ current_user.username }}</p>
+                        <p><strong>Email:</strong> {{ current_user.email_address }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Budget Iniziale:</strong> $1,000</p>
+                        <p><strong>Budget Attuale:</strong> {{ current_user.prettier_budget }}</p>
+                        {% if current_user.budget > 1000 %}
+                            <p class="text-success"><i class="fas fa-arrow-up me-1"></i>Profitto: ${{ current_user.budget - 1000 }}</p>
+                        {% elif current_user.budget < 1000 %}
+                            <p class="text-danger"><i class="fas fa-arrow-down me-1"></i>Perdita: ${{ 1000 - current_user.budget }}</p>
+                        {% else %}
+                            <p class="text-muted"><i class="fas fa-minus me-1"></i>Break-even</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 

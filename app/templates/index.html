@@ -1,16 +1,160 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-La casa 
+Home - Flask Market
 {% endblock%} 
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
-    <h1>Bentornato {{current_user.username}}</h1>
-{% else %}
-  <h1>Benvenuto è un piacere avere ospite come ospite </h1>
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="jumbotron bg-gradient p-5 rounded text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="container">
+                {% if current_user.is_authenticated %}
+                    <h1 class="display-4 text-white fw-bold">Bentornato, {{ current_user.username }}! 👋</h1>
+                    <p class="lead text-white mb-4">Il tuo marketplace digitale ti aspetta. Scopri, compra e vendi i migliori prodotti!</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('market') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Vai al Market
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-chart-bar me-2"></i>Dashboard
+                        </a>
+                    </div>
+                {% else %}
+                    <h1 class="display-4 text-white fw-bold">Benvenuto in Flask Market! 🛍️</h1>
+                    <p class="lead text-white mb-4">Il marketplace moderno dove comprare e vendere è semplice e sicuro. Unisciti alla nostra community!</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('register_page') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Registrati Ora
+                        </a>
+                        <a href="{{ url_for('login_page') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Accedi
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+{% if not current_user.is_authenticated %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5"><i class="fas fa-star me-2"></i>Perché Scegliere Flask Market?</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-primary h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Sicuro e Affidabile</h5>
+                <p class="card-text text-muted">Sistema di autenticazione robusto e transazioni sicure per tutti gli utenti.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-rocket fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Facile da Usare</h5>
+                <p class="card-text text-muted">Interface intuitiva e moderna per comprare e vendere in pochi click.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-warning h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Community Attiva</h5>
+                <p class="card-text text-muted">Unisciti a migliaia di utenti che comprano e vendono ogni giorno.</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endif %}
-<a href="contacts">contatti</a>
+
+<!-- Stats Section per utenti loggati -->
+{% if current_user.is_authenticated %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="text-center mb-4"><i class="fas fa-chart-pie me-2"></i>Il Tuo Status</h3>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card bg-primary text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-wallet fa-2x mb-2"></i>
+                <h4>{{ current_user.prettier_budget }}</h4>
+                <p class="mb-0">Saldo Disponibile</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-box fa-2x mb-2"></i>
+                <h4>{{ current_user.items|length }}</h4>
+                <p class="mb-0">Prodotti Posseduti</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card bg-info text-white text-center">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                <h4>${{ current_user.items|sum(attribute='price') or 0 }}</h4>
+                <p class="mb-0">Valore Inventario</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Call to Action -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark border-info">
+            <div class="card-body text-center p-5">
+                {% if current_user.is_authenticated %}
+                    <h3 class="text-info mb-3">Pronto per il prossimo acquisto?</h3>
+                    <p class="text-muted mb-4">Esplora i prodotti disponibili o aggiungi i tuoi per iniziare a vendere!</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('market') }}" class="btn btn-info btn-lg">
+                            <i class="fas fa-search me-2"></i>Esplora Market
+                        </a>
+                        <a href="{{ url_for('add_item') }}" class="btn btn-outline-info btn-lg">
+                            <i class="fas fa-plus me-2"></i>Vendi Prodotto
+                        </a>
+                    </div>
+                {% else %}
+                    <h3 class="text-info mb-3">Inizia la Tua Avventura nel Marketplace!</h3>
+                    <p class="text-muted mb-4">Registrati ora e ricevi $1,000 di credito gratuito per iniziare a comprare!</p>
+                    <a href="{{ url_for('register_page') }}" class="btn btn-info btn-lg">
+                        <i class="fas fa-gift me-2"></i>Registrati e Ricevi $1,000
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not current_user.is_authenticated %}
+<!-- Quick Links -->
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <p class="text-muted">
+            Hai già un account? <a href="{{ url_for('login_page') }}" class="text-info">Accedi qui</a> • 
+            <a href="{{ url_for('contacts') }}" class="text-info">Contattaci</a>
+        </p>
+    </div>
+</div>
+{% endif %}
 
 {% endblock content %}

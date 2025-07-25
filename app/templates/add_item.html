@@ -1,0 +1,70 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+Aggiungi Prodotto - Flask Market
+{% endblock%} 
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header bg-primary text-center">
+                <h3 class="mb-0 text-white">
+                    <i class="fas fa-plus-circle me-2"></i>Aggiungi Nuovo Prodotto
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.name.label(class='form-label') }}
+                        {{ form.name(class="form-control", placeholder="es. iPhone 15 Pro") }}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.price.label(class='form-label') }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.price(class="form-control", placeholder="999") }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.barcode.label(class='form-label') }}
+                            {{ form.barcode(class="form-control", placeholder="123456789012") }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.description.label(class='form-label') }}
+                        {{ form.description(class="form-control", rows="4", placeholder="Descrivi il tuo prodotto in dettaglio...") }}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class='btn btn-primary btn-lg') }}
+                        <a href="{{ url_for('market') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Torna al Market
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Suggerimenti:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Usa un nome descrittivo e accattivante</li>
+                    <li>Il codice a barre deve essere di esattamente 12 caratteri</li>
+                    <li>Scrivi una descrizione dettagliata per attirare i compratori</li>
+                    <li>Il prezzo deve essere tra $1 e $10,000</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 
