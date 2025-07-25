@@ -13,6 +13,18 @@ def populate_database():
             print("Il database contiene già degli items!")
             return
         
+        # Crea un utente admin di sistema per i prodotti iniziali
+        admin_user = User.query.filter_by(is_admin=True).first()
+        if not admin_user:
+            admin_user = User(
+                username="system",
+                email_address="admin@flaskmarket.com", 
+                password="admin123",
+                is_admin=True
+            )
+            db.session.add(admin_user)
+            db.session.commit()
+        
         # Prodotti di esempio interessanti e vari
         sample_items = [
             # Elettronica
@@ -80,9 +92,18 @@ def populate_database():
                  description="Quaderno classico a righe con copertina rigida nera")
         ]
         
-        # Aggiungi tutti gli items al database
-        for item in sample_items:
-            db.session.add(item)
+        # Aggiungi tutti gli items al database con created_by
+        for item_data in sample_items:
+            # Crea un nuovo item basato sui dati dell'item_data ma con created_by
+            new_item = Item(
+                name=item_data.name,
+                price=item_data.price,
+                barcode=item_data.barcode,
+                description=item_data.description,
+                created_by=admin_user.id,
+                owner=None  # Disponibile per l'acquisto
+            )
+            db.session.add(new_item)
         
         db.session.commit()
         print(f"✅ Aggiunti {len(sample_items)} prodotti al database!")

@@ -26,7 +26,7 @@ Market - Flask Market
                                     <span class="badge bg-success fs-6">${{ item.price }}</span>
                                     <small class="text-muted">Codice: {{ item.barcode }}</small>
                                 </div>
-                                <form method="POST">
+                                <form method="POST" class="mb-2">
                                     {{ purchase_form.hidden_tag() }}
                                     <input type="hidden" name="purchased_item" value="{{ item.name }}">
                                     {% if current_user.budget >= item.price %}
@@ -39,6 +39,17 @@ Market - Flask Market
                                         </button>
                                     {% endif %}
                                 </form>
+                                <div class="d-flex gap-1">
+                                    <small class="text-muted flex-grow-1">
+                                        da {{ item.get_creator().username }}
+                                    </small>
+                                    <a href="{{ url_for('report_item', item_id=item.id) }}" 
+                                       class="btn btn-outline-warning btn-sm"
+                                       onclick="return confirm('Vuoi segnalare questo prodotto come inappropriato?')"
+                                       title="Segnala prodotto">
+                                        <i class="fas fa-flag"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
         "builder": "nixpacks"
     },
     "deploy": {
-        "startCommand": "python init_db.py && gunicorn run:app",
+        "startCommand": "python safe_migrate.py && python populate_db.py && gunicorn run:app",
         "restartPolicyType": "always"
     }
 } 

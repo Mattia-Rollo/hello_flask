@@ -27,6 +27,24 @@
             <i class="fas fa-plus me-1"></i>Aggiungi Prodotto
           </a>
         </li>
+        {% if current_user.can_access_admin() %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-warning" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-shield-alt me-1"></i>Admin
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">
+              <i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin
+            </a></li>
+            <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">
+              <i class="fas fa-users me-2"></i>Gestisci Utenti
+            </a></li>
+            <li><a class="dropdown-item" href="{{ url_for('admin_products') }}">
+              <i class="fas fa-boxes me-2"></i>Gestisci Prodotti
+            </a></li>
+          </ul>
+        </li>
+        {% endif %}
         {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('contacts') }}">

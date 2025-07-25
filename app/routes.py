@@ -1,11 +1,22 @@
 from app import app, db
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort
 from app.models import Item, User
 from app.forms import RegisterForm, LoginForm, PurchaseItemForm, SellItemForm, AddItemForm
 from flask_login import login_user, logout_user, current_user, login_required
+from functools import wraps
 
 name = "Mattia"
 surname = "Rollo"
+
+def admin_required(f):
+    """Decorator per richiedere permessi admin"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.can_access_admin():
+            flash("Accesso negato: permessi amministratore richiesti.", category="danger")
+            return redirect(url_for('home_page'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route("/")
@@ -93,15 +104,21 @@ def login_page():
         if attempted_user and attempted_user.check_password_correction(
             attempted_password=form.password.data
         ):
-            login_user(attempted_user)
-            flash(
-                f"Success! You are logged in as: {attempted_user.username}",
-                category="success",
-            )
-            return redirect(url_for("market"))
+            if attempted_user.is_banned:
+                flash(
+                    f"Il tuo account è stato sospeso. Contatta l'amministrazione.",
+                    category="danger",
+                )
+            else:
+                login_user(attempted_user)
+                flash(
+                    f"Benvenuto, {attempted_user.username}!",
+                    category="success",
+                )
+                return redirect(url_for("market"))
         else:
             flash(
-                f"Username and password are not match! Please try again",
+                f"Username e password non corrispondono! Riprova.",
                 category="danger",
             )
     return render_template("login.html", form=form)
@@ -130,7 +147,8 @@ def add_item():
                 price=form.price.data,
                 barcode=form.barcode.data,
                 description=form.description.data,
-                owner=None  # Disponibile per l'acquisto
+                owner=None,  # Disponibile per l'acquisto
+                created_by=current_user.id  # Chi ha creato il prodotto
             )
             db.session.add(item_to_create)
             db.session.commit()
@@ -159,3 +177,159 @@ def dashboard():
                          total_value=total_value,
                          available_items=available_items,
                          total_items=total_items)
+
+# ========== ADMIN ROUTES ==========
+
+@app.route("/admin")
+@login_required
+@admin_required
+def admin_dashboard():
+    """Dashboard principale per amministratori"""
+    # Statistiche generali
+    total_users = User.query.count()
+    banned_users = User.query.filter_by(is_banned=True).count()
+    total_items = Item.query.count()
+    flagged_items = Item.query.filter_by(is_flagged=True).count()
+    available_items = Item.query.filter_by(owner=None).count()
+    
+    # Utenti recenti
+    recent_users = User.query.order_by(User.id.desc()).limit(5).all()
+    
+    # Prodotti recenti
+    recent_items = Item.query.order_by(Item.id.desc()).limit(10).all()
+    
+    # Prodotti flaggati
+    flagged_products = Item.query.filter_by(is_flagged=True).all()
+    
+    return render_template("admin/dashboard.html",
+                         total_users=total_users,
+                         banned_users=banned_users,
+                         total_items=total_items,
+                         flagged_items=flagged_items,
+                         available_items=available_items,
+                         recent_users=recent_users,
+                         recent_items=recent_items,
+                         flagged_products=flagged_products)
+
+@app.route("/admin/users")
+@login_required
+@admin_required
+def admin_users():
+    """Gestione utenti"""
+    users = User.query.all()
+    return render_template("admin/users.html", users=users)
+
+@app.route("/admin/products")
+@login_required
+@admin_required
+def admin_products():
+    """Gestione prodotti"""
+    items = Item.query.all()
+    return render_template("admin/products.html", items=items)
+
+@app.route("/admin/ban_user/<int:user_id>")
+@login_required
+@admin_required
+def ban_user(user_id):
+    """Banna un utente"""
+    user = User.query.get_or_404(user_id)
+    
+    # Non permettere di bannare altri admin
+    if user.is_admin:
+        flash("Non puoi bannare un altro amministratore!", category="danger")
+        return redirect(url_for('admin_users'))
+    
+    user.ban_user()
+    db.session.commit()
+    flash(f"Utente {user.username} è stato bannato.", category="warning")
+    return redirect(url_for('admin_users'))
+
+@app.route("/admin/unban_user/<int:user_id>")
+@login_required
+@admin_required
+def unban_user(user_id):
+    """Sbanna un utente"""
+    user = User.query.get_or_404(user_id)
+    user.unban_user()
+    db.session.commit()
+    flash(f"Utente {user.username} è stato sbloccato.", category="success")
+    return redirect(url_for('admin_users'))
+
+@app.route("/admin/delete_item/<int:item_id>")
+@login_required
+@admin_required
+def delete_item(item_id):
+    """Rimuove un prodotto (solo admin)"""
+    item = Item.query.get_or_404(item_id)
+    
+    # Se il prodotto è posseduto, restituisci i soldi al proprietario
+    if item.owner:
+        owner = User.query.get(item.owner)
+        owner.budget += item.price
+        flash(f"Prodotto rimosso. Rimborsati ${item.price} a {owner.username}.", category="info")
+    
+    db.session.delete(item)
+    db.session.commit()
+    flash(f"Prodotto '{item.name}' rimosso dal sistema.", category="warning")
+    return redirect(url_for('admin_products'))
+
+@app.route("/admin/flag_item/<int:item_id>")
+@login_required
+@admin_required
+def flag_item(item_id):
+    """Flagga un prodotto come inappropriato"""
+    item = Item.query.get_or_404(item_id)
+    item.is_flagged = True
+    db.session.commit()
+    flash(f"Prodotto '{item.name}' è stato flaggato per revisione.", category="warning")
+    return redirect(url_for('admin_products'))
+
+@app.route("/admin/unflag_item/<int:item_id>")
+@login_required
+@admin_required
+def unflag_item(item_id):
+    """Rimuove il flag da un prodotto"""
+    item = Item.query.get_or_404(item_id)
+    item.is_flagged = False
+    db.session.commit()
+    flash(f"Flag rimosso dal prodotto '{item.name}'.", category="success")
+    return redirect(url_for('admin_products'))
+
+@app.route("/admin/make_admin/<int:user_id>")
+@login_required
+@admin_required
+def make_admin(user_id):
+    """Promuove un utente ad amministratore"""
+    user = User.query.get_or_404(user_id)
+    user.is_admin = True
+    db.session.commit()
+    flash(f"Utente {user.username} è ora amministratore.", category="success")
+    return redirect(url_for('admin_users'))
+
+@app.route("/admin/remove_admin/<int:user_id>")
+@login_required
+@admin_required
+def remove_admin(user_id):
+    """Rimuove privilegi admin (non se stesso)"""
+    user = User.query.get_or_404(user_id)
+    
+    if user.id == current_user.id:
+        flash("Non puoi rimuovere i tuoi stessi privilegi admin!", category="danger")
+        return redirect(url_for('admin_users'))
+    
+    user.is_admin = False
+    db.session.commit()
+    flash(f"Privilegi admin rimossi a {user.username}.", category="warning")
+    return redirect(url_for('admin_users'))
+
+# ========== USER REPORTING SYSTEM ==========
+
+@app.route("/report_item/<int:item_id>")
+@login_required
+def report_item(item_id):
+    """Gli utenti possono segnalare prodotti inappropriati"""
+    item = Item.query.get_or_404(item_id)
+    item.is_flagged = True
+    db.session.commit()
+    flash(f"Prodotto '{item.name}' segnalato agli amministratori.", category="info")
+    return redirect(url_for('market'))

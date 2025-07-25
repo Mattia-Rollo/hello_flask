@@ -1,0 +1,200 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+Admin Dashboard - Flask Market
+{% endblock%} 
+
+{% block content %}
+
+<div class="mb-4">
+    <h2><i class="fas fa-shield-alt me-2 text-warning"></i>Dashboard Amministratore</h2>
+    <p class="text-muted">Pannello di controllo per la gestione del marketplace</p>
+</div>
+
+<!-- Statistiche Generali -->
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h4>{{ total_users }}</h4>
+                <p class="mb-0">Utenti Totali</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-user-slash fa-2x mb-2"></i>
+                <h4>{{ banned_users }}</h4>
+                <p class="mb-0">Utenti Bannati</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-box fa-2x mb-2"></i>
+                <h4>{{ total_items }}</h4>
+                <p class="mb-0">Prodotti Totali</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body text-center">
+                <i class="fas fa-flag fa-2x mb-2"></i>
+                <h4>{{ flagged_items }}</h4>
+                <p class="mb-0">Prodotti Flaggati</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Azioni Rapide -->
+    <div class="col-lg-4 mb-4">
+        <div class="card bg-dark border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Azioni Rapide</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-primary">
+                        <i class="fas fa-users me-2"></i>Gestisci Utenti
+                    </a>
+                    <a href="{{ url_for('admin_products') }}" class="btn btn-success">
+                        <i class="fas fa-boxes me-2"></i>Gestisci Prodotti
+                    </a>
+                    <a href="{{ url_for('market') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-store me-2"></i>Vai al Market
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Prodotti Flaggati -->
+    <div class="col-lg-8 mb-4">
+        <div class="card bg-dark border-danger">
+            <div class="card-header bg-danger">
+                <h5 class="mb-0 text-white">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Prodotti da Moderare ({{ flagged_items }})
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if flagged_products %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Prodotto</th>
+                                    <th>Prezzo</th>
+                                    <th>Creato da</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in flagged_products %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.name }}</strong><br>
+                                        <small class="text-muted">{{ item.description[:50] }}...</small>
+                                    </td>
+                                    <td>${{ item.price }}</td>
+                                    <td>{{ item.get_creator().username }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('unflag_item', item_id=item.id) }}" 
+                                               class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i> Approva
+                                            </a>
+                                            <a href="{{ url_for('delete_item', item_id=item.id) }}" 
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Sei sicuro di voler eliminare questo prodotto?')">
+                                                <i class="fas fa-trash"></i> Elimina
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Nessun prodotto da moderare!
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Utenti e Prodotti Recenti -->
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card bg-dark border-info">
+            <div class="card-header bg-info">
+                <h5 class="mb-0 text-white">
+                    <i class="fas fa-user-plus me-2"></i>Utenti Recenti
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_users %}
+                    {% for user in recent_users %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-2">
+                        <div>
+                            <strong>{{ user.username }}</strong>
+                            {% if user.is_admin %}<span class="badge bg-warning ms-1">Admin</span>{% endif %}
+                            {% if user.is_banned %}<span class="badge bg-danger ms-1">Bannato</span>{% endif %}
+                            <br>
+                            <small class="text-muted">{{ user.email_address }}</small>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">{{ user.prettier_budget }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center mb-0">Nessun utente ancora</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card bg-dark border-success">
+            <div class="card-header bg-success">
+                <h5 class="mb-0 text-white">
+                    <i class="fas fa-box-open me-2"></i>Prodotti Recenti
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_items %}
+                    {% for item in recent_items %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-2">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            {% if item.is_flagged %}<span class="badge bg-danger ms-1">Flaggato</span>{% endif %}
+                            <br>
+                            <small class="text-muted">da {{ item.get_creator().username }}</small>
+                        </div>
+                        <div class="text-end">
+                            <strong>${{ item.price }}</strong><br>
+                            <small class="text-muted">{{ "Venduto" if item.owner else "Disponibile" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center mb-0">Nessun prodotto ancora</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 

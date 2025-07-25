@@ -1,0 +1,171 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+Gestione Utenti - Admin
+{% endblock%} 
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fas fa-users me-2 text-warning"></i>Gestione Utenti</h2>
+        <p class="text-muted mb-0">Controlla e modera la community del marketplace</p>
+    </div>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Torna alla Dashboard
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-primary text-white text-center">
+            <div class="card-body">
+                <h4>{{ users|length }}</h4>
+                <p class="mb-0">Utenti Totali</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <h4>{{ users|selectattr("is_admin")|list|length }}</h4>
+                <p class="mb-0">Amministratori</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-danger text-white text-center">
+            <div class="card-body">
+                <h4>{{ users|selectattr("is_banned")|list|length }}</h4>
+                <p class="mb-0">Utenti Bannati</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-info text-white text-center">
+            <div class="card-body">
+                <h4>{{ users|rejectattr("is_banned")|rejectattr("is_admin")|list|length }}</h4>
+                <p class="mb-0">Utenti Normali</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-dark border-secondary">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-table me-2"></i>Lista Completa Utenti</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Budget</th>
+                        <th>Ruolo</th>
+                        <th>Status</th>
+                        <th>Prodotti</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="{% if user.is_banned %}table-danger{% elif user.is_admin %}table-warning{% endif %}">
+                        <td>{{ user.id }}</td>
+                        <td>
+                            <strong>{{ user.username }}</strong>
+                            {% if user.id == current_user.id %}
+                                <span class="badge bg-info ms-1">Tu</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.email_address }}</td>
+                        <td>{{ user.prettier_budget }}</td>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-shield-alt me-1"></i>Admin
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-user me-1"></i>Utente
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_banned %}
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-ban me-1"></i>Bannato
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Attivo
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ user.items|length }}</span>
+                        </td>
+                        <td>
+                            {% if user.id != current_user.id %}
+                            <div class="btn-group btn-group-sm">
+                                {% if not user.is_banned %}
+                                    <a href="{{ url_for('ban_user', user_id=user.id) }}" 
+                                       class="btn btn-outline-danger btn-sm"
+                                       onclick="return confirm('Sei sicuro di voler bannare {{ user.username }}?')"
+                                       {% if user.is_admin %}disabled title="Non puoi bannare un admin"{% endif %}>
+                                        <i class="fas fa-ban"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('unban_user', user_id=user.id) }}" 
+                                       class="btn btn-outline-success btn-sm"
+                                       title="Sbanna utente">
+                                        <i class="fas fa-unlock"></i>
+                                    </a>
+                                {% endif %}
+                                
+                                {% if not user.is_admin %}
+                                    <a href="{{ url_for('make_admin', user_id=user.id) }}" 
+                                       class="btn btn-outline-warning btn-sm"
+                                       onclick="return confirm('Sei sicuro di voler rendere {{ user.username }} amministratore?')"
+                                       title="Rendi admin">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('remove_admin', user_id=user.id) }}" 
+                                       class="btn btn-outline-secondary btn-sm"
+                                       onclick="return confirm('Sei sicuro di voler rimuovere i privilegi admin a {{ user.username }}?')"
+                                       title="Rimuovi privilegi admin">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                                <span class="text-muted">
+                                    <i class="fas fa-lock me-1"></i>Tu stesso
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Legenda Azioni:</strong>
+        <ul class="mb-0 mt-2">
+            <li><i class="fas fa-ban text-danger"></i> - Banna utente (impedisce login)</li>
+            <li><i class="fas fa-unlock text-success"></i> - Sbanna utente</li>
+            <li><i class="fas fa-arrow-up text-warning"></i> - Promuovi ad amministratore</li>
+            <li><i class="fas fa-arrow-down text-secondary"></i> - Rimuovi privilegi admin</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock content %} 
