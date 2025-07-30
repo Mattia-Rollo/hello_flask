@@ -6,53 +6,53 @@ Gestione Prodotti - Admin
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2><i class="fas fa-boxes me-2 text-warning"></i>Gestione Prodotti</h2>
-        <p class="text-muted mb-0">Modera i prodotti della community e mantieni la qualità del marketplace</p>
+<section class="py-4 admin-compact">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="display-6 fw-bold mb-3">
+                    <i class="fas fa-boxes me-3 text-primary"></i>Gestione Prodotti
+                </h1>
+                <p class="lead text-muted mb-0">Modera i prodotti della community e mantieni la qualità del marketplace</p>
+            </div>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Dashboard
+            </a>
+        </div>
+
+        <div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card hover-lift">
+            <i class="fas fa-boxes text-primary"></i>
+            <h4>{{ items|length }}</h4>
+            <p>Prodotti Totali</p>
+        </div>
     </div>
-    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i>Torna alla Dashboard
-    </a>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card success hover-lift">
+            <i class="fas fa-store text-success"></i>
+            <h4>{{ items|rejectattr("owner")|list|length }}</h4>
+            <p>Disponibili</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card info hover-lift">
+            <i class="fas fa-shopping-cart text-info"></i>
+            <h4>{{ items|selectattr("owner")|list|length }}</h4>
+            <p>Venduti</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stats-card danger hover-lift">
+            <i class="fas fa-flag text-danger"></i>
+            <h4>{{ items|selectattr("is_flagged")|list|length }}</h4>
+            <p>Flaggati</p>
+        </div>
+    </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-primary text-white text-center">
-            <div class="card-body">
-                <h4>{{ items|length }}</h4>
-                <p class="mb-0">Prodotti Totali</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-success text-white text-center">
-            <div class="card-body">
-                <h4>{{ items|rejectattr("owner")|list|length }}</h4>
-                <p class="mb-0">Disponibili</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-info text-white text-center">
-            <div class="card-body">
-                <h4>{{ items|selectattr("owner")|list|length }}</h4>
-                <p class="mb-0">Venduti</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-danger text-white text-center">
-            <div class="card-body">
-                <h4>{{ items|selectattr("is_flagged")|list|length }}</h4>
-                <p class="mb-0">Flaggati</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Filtri -->
-<div class="card border-0 mb-4">
+        <!-- Filtri -->
+        <div class="card border-0 mb-4">
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
@@ -76,8 +76,8 @@ Gestione Prodotti - Admin
     </div>
 </div>
 
-<div class="card border-0">
-    <div class="card-header">
+        <div class="card border-0">
+            <div class="card-header">
         <h5 class="mb-0"><i class="fas fa-table me-2"></i>Lista Completa Prodotti</h5>
     </div>
     <div class="card-body">
@@ -221,5 +221,7 @@ function filterProducts() {
     });
 }
 </script>
+    </div>
+</section>
 
 {% endblock content %} 

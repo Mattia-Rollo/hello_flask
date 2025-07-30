@@ -4,6 +4,9 @@ from app.models import Item, User
 from app.forms import RegisterForm, LoginForm, PurchaseItemForm, SellItemForm, AddItemForm
 from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
+import os
+import uuid
+from werkzeug.utils import secure_filename
 
 name = "Mattia"
 surname = "Rollo"
@@ -142,11 +145,32 @@ def add_item():
         if existing_item:
             flash("Esiste già un prodotto con questo nome o codice a barre!", category="danger")
         else:
+            # Gestisci upload immagine
+            image_filename = None
+            if form.image.data:
+                # Genera nome file sicuro e unico
+                file = form.image.data
+                filename = secure_filename(file.filename)
+                # Aggiungi UUID per evitare conflitti
+                name, ext = os.path.splitext(filename)
+                unique_filename = f"{uuid.uuid4().hex}_{name}{ext}"
+                
+                # Salva il file
+                upload_path = os.path.join(app.root_path, 'static', 'uploads', 'products')
+                os.makedirs(upload_path, exist_ok=True)
+                file_path = os.path.join(upload_path, unique_filename)
+                file.save(file_path)
+                image_filename = unique_filename
+            
             item_to_create = Item(
                 name=form.name.data,
                 price=form.price.data,
                 barcode=form.barcode.data,
                 description=form.description.data,
+                category=form.category.data,
+                condition=form.condition.data,
+                weight=form.weight.data,
+                image_filename=image_filename,
                 owner=None,  # Disponibile per l'acquisto
                 created_by=current_user.id  # Chi ha creato il prodotto
             )
@@ -333,3 +357,30 @@ def report_item(item_id):
     db.session.commit()
     flash(f"Prodotto '{item.name}' segnalato agli amministratori.", category="info")
     return redirect(url_for('market'))
+
+@app.route("/product/<int:item_id>")
+def product_page(item_id):
+    """Pagina di dettaglio del prodotto"""
+    item = Item.query.get_or_404(item_id)
+    
+    # Incrementa le visualizzazioni solo se non è il proprietario o il creatore
+    if not current_user.is_authenticated or (current_user.id != item.owner and current_user.id != item.created_by):
+        item.increment_views()
+    
+    # Prodotti correlati (stessa categoria, escludendo quello attuale)
+    related_products = Item.query.filter(
+        Item.category == item.category,
+        Item.id != item.id,
+        Item.owner.is_(None)  # Solo prodotti disponibili
+    ).limit(4).all()
+    
+    # Altri prodotti dello stesso creatore
+    other_products = Item.query.filter(
+        Item.created_by == item.created_by,
+        Item.id != item.id
+    ).limit(3).all()
+    
+    return render_template("product.html", 
+                         item=item, 
+                         related_products=related_products,
+                         other_products=other_products)

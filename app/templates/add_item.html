@@ -1,70 +1,344 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-Aggiungi Prodotto - Flask Market
+Vendi il Tuo Prodotto | Flask Market
 {% endblock%} 
 
 {% block content %}
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card bg-dark border-secondary">
-            <div class="card-header bg-primary text-center">
-                <h3 class="mb-0 text-white">
-                    <i class="fas fa-plus-circle me-2"></i>Aggiungi Nuovo Prodotto
-                </h3>
-            </div>
-            <div class="card-body">
-                <form method="POST" novalidate>
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="mb-3">
-                        {{ form.name.label(class='form-label') }}
-                        {{ form.name(class="form-control", placeholder="es. iPhone 15 Pro") }}
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.price.label(class='form-label') }}
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                {{ form.price(class="form-control", placeholder="999") }}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.barcode.label(class='form-label') }}
-                            {{ form.barcode(class="form-control", placeholder="123456789012") }}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form.description.label(class='form-label') }}
-                        {{ form.description(class="form-control", rows="4", placeholder="Descrivi il tuo prodotto in dettaglio...") }}
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        {{ form.submit(class='btn btn-primary btn-lg') }}
-                        <a href="{{ url_for('market') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Torna al Market
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                <strong>Suggerimenti:</strong>
-                <ul class="mb-0 mt-2">
-                    <li>Usa un nome descrittivo e accattivante</li>
-                    <li>Il codice a barre deve essere di esattamente 12 caratteri</li>
-                    <li>Scrivi una descrizione dettagliata per attirare i compratori</li>
-                    <li>Il prezzo deve essere tra $1 e $10,000</li>
-                </ul>
+<!-- Hero Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-store me-3 text-primary"></i>Vendi il Tuo Prodotto
+                </h1>
+                <p class="lead text-muted mb-0">Raggiungi migliaia di potenziali acquirenti nella nostra community</p>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Add Product Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Form Section -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-4">
+                        <h4 class="mb-0 fw-bold">
+                            <i class="fas fa-edit me-2 text-primary"></i>Dettagli Prodotto
+                        </h4>
+                        <p class="text-muted mb-0 mt-1">Inserisci le informazioni del tuo prodotto</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data" novalidate id="productForm">
+                            {{ form.hidden_tag() }}
+                            
+                            <!-- Product Name -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-tag me-2 text-primary"></i>{{ form.name.label.text }}
+                                </label>
+                                {{ form.name(class="form-control form-control-lg", placeholder="es. iPhone 15 Pro, MacBook Air M2, Nike Air Max...") }}
+                                <div class="form-text">Un nome accattivante aiuta a vendere meglio il prodotto</div>
+                            </div>
+
+                            <!-- Price and Barcode -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-dollar-sign me-2 text-success"></i>{{ form.price.label.text }}
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-success text-white">$</span>
+                                        {{ form.price(class="form-control", placeholder="999") }}
+                                    </div>
+                                    <div class="form-text">Prezzo competitivo per una vendita veloce</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-barcode me-2 text-info"></i>{{ form.barcode.label.text }}
+                                    </label>
+                                    {{ form.barcode(class="form-control form-control-lg", placeholder="123456789012") }}
+                                    <div class="form-text">Esattamente 12 caratteri numerici</div>
+                                </div>
+                            </div>
+
+                            <!-- Category, Condition, Weight -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-folder me-2 text-warning"></i>{{ form.category.label.text }}
+                                    </label>
+                                    {{ form.category(class="form-select form-select-lg") }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-star me-2 text-warning"></i>{{ form.condition.label.text }}
+                                    </label>
+                                    {{ form.condition(class="form-select form-select-lg") }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-weight me-2 text-secondary"></i>{{ form.weight.label.text }}
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        {{ form.weight(class="form-control", placeholder="0.5", step="0.001") }}
+                                        <span class="input-group-text">kg</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-align-left me-2 text-primary"></i>{{ form.description.label.text }}
+                                </label>
+                                {{ form.description(class="form-control", rows="5", placeholder="Descrivi il tuo prodotto in dettaglio: caratteristiche, stato di conservazione, motivo della vendita, accessori inclusi...") }}
+                                <div class="form-text">
+                                    <span id="charCount">0</span>/1000 caratteri - Una descrizione dettagliata aumenta le vendite
+                                </div>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-camera me-2 text-success"></i>{{ form.image.label.text }}
+                                </label>
+                                <div class="image-upload-container">
+                                    <div class="image-upload-area" id="imageUploadArea">
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt text-primary mb-3" style="font-size: 3rem;"></i>
+                                            <h5 class="fw-bold">Carica un'immagine del prodotto</h5>
+                                            <p class="text-muted mb-3">Trascina qui il file o clicca per selezionare</p>
+                                            {{ form.image(class="form-control d-none", accept="image/*", id="imageInput") }}
+                                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('imageInput').click()">
+                                                <i class="fas fa-plus me-2"></i>Scegli File
+                                            </button>
+                                            <div class="mt-2">
+                                                <small class="text-muted">JPG, PNG, GIF (max 5MB)</small>
+                                            </div>
+                                        </div>
+                                        <div class="image-preview d-none" id="imagePreview">
+                                            <img id="previewImg" src="" alt="Preview" class="img-fluid rounded">
+                                            <div class="preview-overlay">
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeImage()">
+                                                    <i class="fas fa-trash"></i> Rimuovi
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('imageInput').click()">
+                                                    <i class="fas fa-edit"></i> Cambia
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.submit(class='btn btn-primary btn-lg w-100', style="height: 60px;") }}
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ url_for('market') }}" class="btn btn-outline-secondary btn-lg w-100" style="height: 60px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-arrow-left me-2"></i>Torna al Market
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Tips Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light border-0">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-lightbulb me-2 text-warning"></i>Consigli per Vendere
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <strong>Foto di qualità</strong>
+                                <p class="text-muted mb-0 small">Prodotti con foto vendono 3x più velocemente</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <strong>Prezzo competitivo</strong>
+                                <p class="text-muted mb-0 small">Controlla prezzi simili nel market</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <strong>Descrizione completa</strong>
+                                <p class="text-muted mb-0 small">Include tutti i dettagli importanti</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                            <div>
+                                <strong>Categoria corretta</strong>
+                                <p class="text-muted mb-0 small">Aiuta gli acquirenti a trovarti</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light border-0">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-chart-line me-2 text-primary"></i>Statistiche Marketplace
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-primary bg-opacity-10 rounded">
+                                    <h4 class="fw-bold text-primary mb-1">98%</h4>
+                                    <small class="text-muted">Vendite completate</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-success bg-opacity-10 rounded">
+                                    <h4 class="fw-bold text-success mb-1">24h</h4>
+                                    <small class="text-muted">Tempo medio vendita</small>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 bg-warning bg-opacity-10 rounded">
+                                    <h4 class="fw-bold text-warning mb-1">1,500+</h4>
+                                    <small class="text-muted">Prodotti venduti questo mese</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light border-0">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-shield-alt me-2 text-success"></i>Vendita Sicura
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-lock text-success me-2"></i>
+                            <small>Pagamenti protetti</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user-shield text-success me-2"></i>
+                            <small>Acquirenti verificati</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-headset text-success me-2"></i>
+                            <small>Supporto 24/7</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-undo text-success me-2"></i>
+                            <small>Garanzia rimborso</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript for Enhanced UX -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('imageInput');
+    const uploadArea = document.getElementById('imageUploadArea');
+    const uploadContent = uploadArea.querySelector('.upload-content');
+    const previewContainer = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const descriptionTextarea = document.querySelector('textarea[name="description"]');
+    const charCount = document.getElementById('charCount');
+
+    // Character counter for description
+    if (descriptionTextarea && charCount) {
+        descriptionTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+            if (this.value.length > 800) {
+                charCount.classList.add('text-warning');
+            } else {
+                charCount.classList.remove('text-warning');
+            }
+        });
+    }
+
+    // Image upload functionality
+    function handleImagePreview(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                uploadContent.classList.add('d-none');
+                previewContainer.classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // File input change
+    imageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            handleImagePreview(this.files[0]);
+        }
+    });
+
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            imageInput.files = files;
+            handleImagePreview(files[0]);
+        }
+    });
+
+    // Form validation enhancement
+    const form = document.getElementById('productForm');
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Pubblicando...';
+        submitBtn.disabled = true;
+    });
+});
+
+function removeImage() {
+    const imageInput = document.getElementById('imageInput');
+    const uploadContent = document.querySelector('.upload-content');
+    const previewContainer = document.getElementById('imagePreview');
+    
+    imageInput.value = '';
+    uploadContent.classList.remove('d-none');
+    previewContainer.classList.add('d-none');
+}
+</script>
 
 {% endblock content %} 

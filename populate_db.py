@@ -92,14 +92,50 @@ def populate_database():
                  description="Quaderno classico a righe con copertina rigida nera")
         ]
         
-        # Aggiungi tutti gli items al database con created_by
+        # Aggiungi tutti gli items al database con created_by e nuovi campi
+        categories_mapping = {
+            "iPhone": "Elettronica", "Samsung Galaxy": "Elettronica", "MacBook": "Elettronica", "Dell XPS": "Elettronica",
+            "PlayStation": "Elettronica", "Nintendo": "Elettronica", "Xbox": "Elettronica",
+            "Dyson": "Casa e Giardino", "Nespresso": "Casa e Giardino", "Robot": "Casa e Giardino", "Instant Pot": "Casa e Giardino",
+            "Apple Watch": "Elettronica", "Zaino": "Abbigliamento", "Sneakers": "Abbigliamento",
+            "Bicicletta": "Sport e Tempo Libero", "Tapis": "Sport e Tempo Libero",
+            "Libro": "Libri e Riviste", "Powerbank": "Elettronica", "Tazza": "Casa e Giardino", 
+            "Cuffie": "Elettronica", "Notebook": "Libri e Riviste"
+        }
+        
+        weights_mapping = {
+            "iPhone": 0.2, "Samsung": 0.19, "MacBook": 1.4, "Dell": 1.6,
+            "PlayStation": 4.5, "Nintendo": 0.4, "Xbox": 4.4,
+            "Dyson": 2.6, "Nespresso": 4.0, "Robot": 3.4, "Instant": 5.7,
+            "Apple Watch": 0.05, "Zaino": 0.8, "Sneakers": 0.4,
+            "Bicicletta": 22.0, "Tapis": 35.0,
+            "Libro": 0.5, "Powerbank": 0.3, "Tazza": 0.4, "Cuffie": 0.25, "Notebook": 0.2
+        }
+        
         for item_data in sample_items:
-            # Crea un nuovo item basato sui dati dell'item_data ma con created_by
+            # Determina categoria e peso basandosi sul nome
+            category = "Generale"
+            weight = None
+            
+            for key, cat in categories_mapping.items():
+                if key.lower() in item_data.name.lower():
+                    category = cat
+                    break
+            
+            for key, w in weights_mapping.items():
+                if key.lower() in item_data.name.lower():
+                    weight = w
+                    break
+            
+            # Crea un nuovo item basato sui dati dell'item_data ma con created_by e nuovi campi
             new_item = Item(
                 name=item_data.name,
                 price=item_data.price,
                 barcode=item_data.barcode,
                 description=item_data.description,
+                category=category,
+                condition="Nuovo",  # Tutti i prodotti di esempio sono nuovi
+                weight=weight,
                 created_by=admin_user.id,
                 owner=None  # Disponibile per l'acquisto
             )

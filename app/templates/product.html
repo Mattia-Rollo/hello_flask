@@ -1,0 +1,407 @@
+{% extends 'base.html' %} 
+
+{% block title%} 
+{{ item.name }} - Dettagli Prodotto | Flask Market
+{% endblock%} 
+
+{% block content %}
+
+<!-- Product Hero Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Product Images -->
+                <div class="product-images mb-4">
+                    <div class="main-image mb-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="ratio ratio-1x1">
+                                {% if item.has_image %}
+                                    <img src="{{ item.image_url }}" 
+                                         alt="{{ item.name }}" 
+                                         class="card-img-top object-fit-cover rounded">
+                                {% else %}
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-box-open text-muted" style="font-size: 6rem;"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Thumbnail Gallery -->
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <div class="card border shadow-sm">
+                                <div class="ratio ratio-1x1">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card border shadow-sm">
+                                <div class="ratio ratio-1x1">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card border shadow-sm">
+                                <div class="ratio ratio-1x1">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card border shadow-sm">
+                                <div class="ratio ratio-1x1">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-plus text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <!-- Product Info -->
+                <div class="product-info">
+                    <!-- Status Badges -->
+                    <div class="mb-3">
+                        <span class="badge bg-success fs-6 me-2">
+                            {{ "🔴 Venduto" if item.owner else "✅ Disponibile" }}
+                        </span>
+                        <span class="badge bg-primary fs-6 me-2">{{ item.category }}</span>
+                        {% if item.is_flagged %}
+                        <span class="badge bg-warning fs-6">
+                            <i class="fas fa-flag me-1"></i>In Revisione
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Product Title -->
+                    <h1 class="display-6 fw-bold mb-3">{{ item.name }}</h1>
+                    
+                    <!-- Price -->
+                    <div class="price-section mb-4">
+                        <span class="display-4 fw-bold text-primary">${{ item.price }}</span>
+                        <small class="text-muted ms-2">Prezzo fisso</small>
+                    </div>
+                    
+                    <!-- Product Details Grid -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tag text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Condizione</small>
+                                    <strong>{{ item.condition }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-weight text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Peso</small>
+                                    <strong>{{ item.formatted_weight }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-barcode text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Codice</small>
+                                    <strong>{{ item.barcode }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-eye text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Visualizzazioni</small>
+                                    <strong>{{ item.views }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    {% if current_user.is_authenticated %}
+                        {% if not item.owner %}
+                            <div class="d-grid gap-2 mb-3">
+                                <form method="POST" action="{{ url_for('market') }}">
+                                    <input type="hidden" name="purchased_item" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-shopping-cart me-2"></i>Acquista Ora
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <a href="{{ url_for('market') }}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-arrow-left me-1"></i>Torna al Market
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="{{ url_for('report_item', item_id=item.id) }}" class="btn btn-outline-warning w-100">
+                                        <i class="fas fa-flag me-1"></i>Segnala
+                                    </a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Prodotto venduto</strong><br>
+                                Questo prodotto è già stato acquistato.
+                            </div>
+                            <a href="{{ url_for('market') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Torna al Market
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <strong>Accedi per acquistare</strong><br>
+                            <a href="{{ url_for('login_page') }}" class="btn btn-primary mt-2">Accedi</a>
+                            <a href="{{ url_for('register_page') }}" class="btn btn-outline-primary mt-2">Registrati</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Description -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">
+                            <i class="fas fa-info-circle me-2 text-primary"></i>Descrizione Prodotto
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">{{ item.description }}</p>
+                    </div>
+                </div>
+                
+                <!-- Seller Info -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user me-2 text-primary"></i>Informazioni Venditore
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                         style="width: 60px; height: 60px;">
+                                        <i class="fas fa-user text-primary fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">{{ item.get_creator().username }}</h5>
+                                        <p class="text-muted mb-1">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            Membro dal {{ item.get_creator().id }}
+                                        </p>
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-box me-1"></i>
+                                            {{ other_products|length + 1 }} prodotti pubblicati
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <small class="text-muted">Pubblicato il</small><br>
+                                <strong>{{ item.formatted_created_at }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Product Specs -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2 text-primary"></i>Specifiche
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Categoria:</span>
+                                    <strong>{{ item.category }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Condizione:</span>
+                                    <strong>{{ item.condition }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Peso:</span>
+                                    <strong>{{ item.formatted_weight }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Codice a barre:</span>
+                                    <strong class="font-monospace">{{ item.barcode }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">ID Prodotto:</span>
+                                    <strong class="font-monospace">#{{ item.id }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Safety Tips -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shield-alt me-2 text-success"></i>Acquisti Sicuri
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small>Pagamenti sicuri e protetti</small>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small>Venditore verificato</small>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small>Garanzia di rimborso</small>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <small>Supporto clienti 24/7</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+{% if related_products %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h3 class="mb-4">
+            <i class="fas fa-thumbs-up me-2 text-primary"></i>Prodotti Simili
+        </h3>
+        <div class="row g-4">
+            {% for related_item in related_products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="position-relative">
+                        {% if related_item.has_image %}
+                            <img src="{{ related_item.image_url }}" 
+                                 alt="{{ related_item.name }}" 
+                                 class="card-img-top object-fit-cover" 
+                                 style="height: 180px;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                                <i class="fas fa-box-open text-muted" style="font-size: 2rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-success">${{ related_item.price }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title fw-bold mb-2">{{ related_item.name }}</h6>
+                        <p class="card-text text-muted small">{{ related_item.description[:80] }}...</p>
+                        <div class="mt-auto">
+                            <a href="{{ url_for('product_page', item_id=related_item.id) }}" 
+                               class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-eye me-1"></i>Visualizza
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Other Products from Seller -->
+{% if other_products %}
+<section class="py-5">
+    <div class="container">
+        <h3 class="mb-4">
+            <i class="fas fa-store me-2 text-primary"></i>Altri prodotti di {{ item.get_creator().username }}
+        </h3>
+        <div class="row g-4">
+            {% for other_item in other_products %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="position-relative">
+                        {% if other_item.has_image %}
+                            <img src="{{ other_item.image_url }}" 
+                                 alt="{{ other_item.name }}" 
+                                 class="card-img-top object-fit-cover" 
+                                 style="height: 160px;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="fas fa-box-open text-muted" style="font-size: 2rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-success">${{ other_item.price }}</span>
+                        </div>
+                        {% if other_item.owner %}
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-danger">Venduto</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title fw-bold mb-2">{{ other_item.name }}</h6>
+                        <p class="card-text text-muted small">{{ other_item.description[:60] }}...</p>
+                        <div class="mt-auto">
+                            <a href="{{ url_for('product_page', item_id=other_item.id) }}" 
+                               class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-eye me-1"></i>Visualizza
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock content %} 

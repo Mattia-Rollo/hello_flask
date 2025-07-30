@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, HiddenField, TextAreaField, IntegerField
-from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, NumberRange
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, TextAreaField, IntegerField, SelectField, FloatField
+from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, NumberRange, Optional
 from app.models import User
 
 
@@ -39,4 +40,25 @@ class AddItemForm(FlaskForm):
     price = IntegerField(label='Prezzo ($):', validators=[DataRequired(), NumberRange(min=1, max=10000)])
     barcode = StringField(label='Codice a Barre:', validators=[Length(min=12, max=12), DataRequired()])
     description = TextAreaField(label='Descrizione:', validators=[Length(min=10, max=1000), DataRequired()])
+    category = SelectField(label='Categoria:', choices=[
+        ('Elettronica', 'Elettronica'),
+        ('Abbigliamento', 'Abbigliamento'),
+        ('Casa e Giardino', 'Casa e Giardino'),
+        ('Sport e Tempo Libero', 'Sport e Tempo Libero'),
+        ('Libri e Riviste', 'Libri e Riviste'),
+        ('Auto e Moto', 'Auto e Moto'),
+        ('Bellezza e Salute', 'Bellezza e Salute'),
+        ('Giocattoli', 'Giocattoli'),
+        ('Generale', 'Generale')
+    ], default='Generale', validators=[DataRequired()])
+    condition = SelectField(label='Condizione:', choices=[
+        ('Nuovo', 'Nuovo'),
+        ('Come Nuovo', 'Come Nuovo'),
+        ('Ottime Condizioni', 'Ottime Condizioni'),
+        ('Buone Condizioni', 'Buone Condizioni'),
+        ('Condizioni Discrete', 'Condizioni Discrete'),
+        ('Da Riparare', 'Da Riparare')
+    ], default='Nuovo', validators=[DataRequired()])
+    weight = FloatField(label='Peso (kg):', validators=[Optional(), NumberRange(min=0.001, max=1000)])
+    image = FileField(label='Immagine Prodotto:', validators=[Optional(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Solo immagini JPG, PNG o GIF!')])
     submit = SubmitField(label='Aggiungi Prodotto')

@@ -1,6 +1,7 @@
 from app import db, login_manager
 from app import bcrypt
 from flask_login import UserMixin
+from datetime import datetime
 
 
 @login_manager.user_loader
@@ -61,6 +62,12 @@ class Item(db.Model):
     price = db.Column(db.Integer, nullable=False)
     barcode = db.Column(db.String(length=12), nullable=False, unique=True)
     description = db.Column(db.String(length=1024), nullable=False, unique=False)
+    category = db.Column(db.String(length=50), nullable=False, default="Generale")
+    condition = db.Column(db.String(length=20), nullable=False, default="Nuovo")
+    weight = db.Column(db.Float, nullable=True)  # peso in kg
+    image_filename = db.Column(db.String(length=100), nullable=True)  # nome file immagine
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    views = db.Column(db.Integer, nullable=False, default=0)
     owner = db.Column(db.Integer, db.ForeignKey("user.id"))
     created_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     is_flagged = db.Column(db.Boolean, nullable=False, default=False)
@@ -71,3 +78,36 @@ class Item(db.Model):
     def get_creator(self):
         """Restituisce l'utente che ha creato il prodotto"""
         return self.creator_user
+    
+    def increment_views(self):
+        """Incrementa il numero di visualizzazioni"""
+        self.views += 1
+        db.session.commit()
+    
+    @property
+    def formatted_created_at(self):
+        """Data di creazione formattata"""
+        return self.created_at.strftime("%d/%m/%Y")
+    
+    @property
+    def formatted_weight(self):
+        """Peso formattato"""
+        if self.weight:
+            if self.weight < 1:
+                return f"{int(self.weight * 1000)}g"
+            else:
+                return f"{self.weight:.1f}kg"
+        return "Non specificato"
+    
+    @property
+    def image_url(self):
+        """URL dell'immagine del prodotto"""
+        if self.image_filename:
+            return f"/static/uploads/products/{self.image_filename}"
+        else:
+            return "/static/images/product-placeholder.svg"
+    
+    @property
+    def has_image(self):
+        """Controlla se il prodotto ha un'immagine"""
+        return self.image_filename is not None
