@@ -1,106 +1,228 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-Market - Flask Market
+Market - Scopri i Migliori Prodotti | Flask Market
 {% endblock%} 
 
 {% block content %}
 
-<div class="row">
-    <div class="col-lg-8">
-        <h2><i class="fas fa-store me-2"></i>Prodotti Disponibili</h2>
-        <p class="text-muted mb-4">Sfoglia e acquista i prodotti disponibili nel nostro market</p>
+<section class="py-5">
+    <div class="container">
         
-        {% if items %}
-            <div class="row">
-                {% for item in items %}
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card border-secondary h-100">
-                        <div class="card-header bg-primary">
-                            <h5 class="card-title mb-0 text-white">{{ item.name }}</h5>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <p class="card-text text-muted small">{{ item.description[:80] }}{% if item.description|length > 80 %}...{% endif %}</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-success fs-6">${{ item.price }}</span>
-                                    <small class="text-muted">Codice: {{ item.barcode }}</small>
-                                </div>
-                                <form method="POST" class="mb-2">
-                                    {{ purchase_form.hidden_tag() }}
-                                    <input type="hidden" name="purchased_item" value="{{ item.name }}">
-                                    {% if current_user.budget >= item.price %}
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="fas fa-shopping-cart me-1"></i>Acquista
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-secondary w-100" disabled>
-                                            <i class="fas fa-wallet me-1"></i>Saldo Insufficiente
-                                        </button>
-                                    {% endif %}
-                                </form>
-                                <div class="d-flex gap-1">
-                                    <small class="text-muted flex-grow-1">
-                                        da {{ item.get_creator().username }}
-                                    </small>
-                                    <a href="{{ url_for('report_item', item_id=item.id) }}" 
-                                       class="btn btn-outline-warning btn-sm"
-                                       onclick="return confirm('Vuoi segnalare questo prodotto come inappropriato?')"
-                                       title="Segnala prodotto">
-                                        <i class="fas fa-flag"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Header Section -->
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-store me-3 text-primary"></i>Marketplace Premium
+                </h1>
+                <p class="lead text-muted">Scopri prodotti di qualità dalla nostra community di venditori verificati</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column gap-2">
+                    <div class="stats-card text-center p-3">
+                        <h5 class="fw-bold text-success mb-1">{{ current_user.prettier_budget }}</h5>
+                        <small class="text-muted">Saldo Disponibile</small>
                     </div>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                Non ci sono prodotti disponibili al momento. 
-                <a href="{{ url_for('add_item') }}" class="alert-link">Aggiungi un prodotto!</a>
-            </div>
-        {% endif %}
-    </div>
-    
-    <div class="col-lg-4">
-        <!-- Pannello Utente -->
-        <div class="card bg-dark border-secondary mb-4">
-            <div class="card-header bg-info">
-                <h5 class="mb-0 text-white">
-                    <i class="fas fa-user me-2"></i>Il Tuo Account
-                </h5>
-            </div>
-            <div class="card-body text-center">
-                <h4 class="text-success">{{ current_user.prettier_budget }}</h4>
-                <p class="text-muted">Saldo Disponibile</p>
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('add_item') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Aggiungi Prodotto
-                    </a>
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-chart-bar me-1"></i>Dashboard
-                    </a>
                 </div>
             </div>
         </div>
-        
-        <!-- I Tuoi Prodotti -->
-        <div class="card bg-dark border-secondary">
-            <div class="card-header bg-warning">
-                <h5 class="mb-0 text-dark">
-                    <i class="fas fa-box me-2"></i>I Tuoi Prodotti ({{ owned_items|length }})
-                </h5>
+
+        <div class="row">
+            <!-- Products Section -->
+            <div class="col-lg-8">
+                {% if items %}
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Prodotti Disponibili ({{ items|length }})</h3>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="sortProducts('price')">
+                                <i class="fas fa-sort-amount-down me-1"></i>Prezzo
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="sortProducts('name')">
+                                <i class="fas fa-sort-alpha-down me-1"></i>Nome
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4" id="products-grid">
+                        {% for item in items %}
+                        <div class="col-md-6 col-xl-4 product-item" data-price="{{ item.price }}" data-name="{{ item.name|lower }}">
+                            <div class="card product-card h-100 border-0">
+                                <!-- Product Image Placeholder -->
+                                <div class="position-relative">
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-box-open text-muted" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <div class="position-absolute top-0 end-0 m-3">
+                                        <span class="badge bg-success fs-6 px-3 py-2">${{ item.price }}</span>
+                                    </div>
+                                    {% if item.is_flagged %}
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-flag me-1"></i>In Revisione
+                                        </span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-bold mb-2">{{ item.name }}</h5>
+                                    <p class="card-text text-muted small flex-grow-1">{{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}</p>
+                                    
+                                    <div class="mt-auto">
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-user me-1"></i>{{ item.get_creator().username }}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="fas fa-barcode me-1"></i>{{ item.barcode }}
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2">
+                                            <form method="POST">
+                                                {{ purchase_form.hidden_tag() }}
+                                                <input type="hidden" name="purchased_item" value="{{ item.name }}">
+                                                {% if current_user.budget >= item.price %}
+                                                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                                                        <i class="fas fa-shopping-cart me-2"></i>Acquista Ora
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-secondary w-100" disabled>
+                                                        <i class="fas fa-wallet me-2"></i>Saldo Insufficiente
+                                                    </button>
+                                                {% endif %}
+                                            </form>
+                                            
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-outline-info btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#productModal{{ item.id }}">
+                                                    <i class="fas fa-info-circle me-1"></i>Dettagli
+                                                </button>
+                                                <a href="{{ url_for('report_item', item_id=item.id) }}" 
+                                                   class="btn btn-outline-warning btn-sm"
+                                                   onclick="return confirm('Vuoi segnalare questo prodotto come inappropriato?')"
+                                                   title="Segnala prodotto">
+                                                    <i class="fas fa-flag"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Detail Modal -->
+                        <div class="modal fade" id="productModal{{ item.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold">{{ item.name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 250px;">
+                                                    <i class="fas fa-box-open text-muted" style="font-size: 4rem;"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h3 class="text-success fw-bold mb-3">${{ item.price }}</h3>
+                                                <p class="mb-4">{{ item.description }}</p>
+                                                <div class="border-top pt-3">
+                                                    <p class="mb-2"><strong>Venditore:</strong> {{ item.get_creator().username }}</p>
+                                                    <p class="mb-2"><strong>Codice:</strong> {{ item.barcode }}</p>
+                                                    <p class="mb-0"><strong>Status:</strong> 
+                                                        <span class="badge bg-success">Disponibile</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                        <form method="POST" class="d-inline">
+                                            {{ purchase_form.hidden_tag() }}
+                                            <input type="hidden" name="purchased_item" value="{{ item.name }}">
+                                            {% if current_user.budget >= item.price %}
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-shopping-cart me-2"></i>Acquista Ora
+                                                </button>
+                                            {% else %}
+                                                <button type="button" class="btn btn-secondary" disabled>
+                                                    Saldo Insufficiente
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-box-open text-muted" style="font-size: 4rem;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">Nessun Prodotto Disponibile</h3>
+                        <p class="text-muted mb-4">Al momento non ci sono prodotti nel marketplace. Sii il primo ad aggiungerne uno!</p>
+                        <a href="{{ url_for('add_item') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Aggiungi il Primo Prodotto
+                        </a>
+                    </div>
+                {% endif %}
             </div>
-            <div class="card-body">
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Account Card -->
+                <div class="card border-0 mb-4 sticky-top" style="top: 100px;">
+                    <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-user-circle me-2"></i>Il Tuo Account
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <h4 class="text-success fw-bold">{{ current_user.prettier_budget }}</h4>
+                            <p class="text-muted mb-0">Saldo Disponibile</p>
+                        </div>
+                        
+                        <div class="row text-center mb-4">
+                            <div class="col-6">
+                                <h6 class="fw-bold">{{ current_user.items|length }}</h6>
+                                <small class="text-muted">Prodotti</small>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="fw-bold">${{ current_user.items|sum(attribute='price') or 0 }}</h6>
+                                <small class="text-muted">Valore</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('add_item') }}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Vendi Prodotto
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-chart-bar me-2"></i>Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Products Card -->
                 {% if owned_items %}
-                    {% for item in owned_items %}
-                    <div class="border-bottom border-secondary pb-2 mb-2">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="mb-1">{{ item.name }}</h6>
+                <div class="card border-0">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-box me-2"></i>I Tuoi Prodotti ({{ owned_items|length }})
+                        </h5>
+                    </div>
+                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        {% for item in owned_items %}
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold">{{ item.name }}</h6>
                                 <small class="text-muted">${{ item.price }}</small>
                             </div>
                             <form method="POST" class="ms-2">
@@ -111,22 +233,47 @@ Market - Flask Market
                                 </button>
                             </form>
                         </div>
+                        {% endfor %}
+                        
+                        <div class="mt-3 pt-3 border-top text-center">
+                            <strong class="text-success">
+                                Valore Totale: ${{ owned_items|sum(attribute='price') }}
+                            </strong>
+                        </div>
                     </div>
-                    {% endfor %}
-                    <div class="mt-3 pt-2 border-top border-secondary">
-                        <small class="text-muted">
-                            Valore totale: ${{ owned_items|sum(attribute='price') }}
-                        </small>
-                    </div>
+                </div>
                 {% else %}
-                    <p class="text-muted text-center mb-0">
-                        <i class="fas fa-shopping-bag me-2"></i>
-                        Non possiedi ancora prodotti
-                    </p>
+                <div class="card border-0">
+                    <div class="card-body text-center py-4">
+                        <i class="fas fa-shopping-bag text-muted mb-3" style="font-size: 2rem;"></i>
+                        <h6 class="fw-bold mb-2">Nessun Prodotto</h6>
+                        <p class="text-muted small mb-3">Non possiedi ancora prodotti</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Compra il Primo</a>
+                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<script>
+function sortProducts(criteria) {
+    const grid = document.getElementById('products-grid');
+    const products = Array.from(grid.children);
+    
+    products.sort((a, b) => {
+        if (criteria === 'price') {
+            return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+        } else if (criteria === 'name') {
+            return a.dataset.name.localeCompare(b.dataset.name);
+        }
+    });
+    
+    // Clear and re-append sorted products
+    grid.innerHTML = '';
+    products.forEach(product => grid.appendChild(product));
+}
+</script>
 
 {% endblock content %}

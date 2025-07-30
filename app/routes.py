@@ -26,7 +26,7 @@ def home_page():
 
 @app.route("/contacts")
 def contacts():
-    return render_template("contacts.html", name=name, surname=surname)
+    return render_template("contacts.html")
 
 
 @app.route("/market", methods=['GET', 'POST'])

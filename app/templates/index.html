@@ -1,160 +1,230 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-Home - Flask Market
+Home - Flask Market | Premium E-commerce
 {% endblock%} 
 
 {% block content %}
 
-<!-- Hero Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="jumbotron bg-gradient p-5 rounded text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <div class="container">
-                {% if current_user.is_authenticated %}
-                    <h1 class="display-4 text-white fw-bold">Bentornato, {{ current_user.username }}! 👋</h1>
-                    <p class="lead text-white mb-4">Il tuo marketplace digitale ti aspetta. Scopri, compra e vendi i migliori prodotti!</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ url_for('market') }}" class="btn btn-light btn-lg">
-                            <i class="fas fa-shopping-cart me-2"></i>Vai al Market
-                        </a>
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-chart-bar me-2"></i>Dashboard
-                        </a>
-                    </div>
-                {% else %}
-                    <h1 class="display-4 text-white fw-bold">Benvenuto in Flask Market! 🛍️</h1>
-                    <p class="lead text-white mb-4">Il marketplace moderno dove comprare e vendere è semplice e sicuro. Unisciti alla nostra community!</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ url_for('register_page') }}" class="btn btn-light btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Registrati Ora
-                        </a>
-                        <a href="{{ url_for('login_page') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Accedi
-                        </a>
-                    </div>
-                {% endif %}
+<!-- Hero Section - Apple Style -->
+<section class="hero-apple">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="hero-apple-content">
+                    {% if current_user.is_authenticated %}
+                        <h1 class="hero-apple-title">
+                            Bentornato,<br>
+                            <span class="hero-apple-accent">{{ current_user.username }}</span>
+                        </h1>
+                        <p class="hero-apple-subtitle">
+                            Il tuo marketplace digitale di fiducia.<br>
+                            Scopri, compra e vendi con semplicità.
+                        </p>
+                        <div class="hero-apple-actions">
+                            <a href="{{ url_for('market') }}" class="btn-apple-primary">
+                                Esplora Market
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="btn-apple-secondary">
+                                La Tua Dashboard
+                            </a>
+                        </div>
+                    {% else %}
+                        <h1 class="hero-apple-title">
+                            Il Marketplace<br>
+                            <span class="hero-apple-accent">del Futuro</span>
+                        </h1>
+                        <p class="hero-apple-subtitle">
+                            Compra e vendi in sicurezza nella community<br>
+                            più dinamica del web.
+                        </p>
+                        <div class="hero-apple-actions">
+                            <a href="{{ url_for('register_page') }}" class="btn-apple-primary">
+                                Inizia Gratis
+                            </a>
+                            <a href="{{ url_for('login_page') }}" class="btn-apple-secondary">
+                                Accedi
+                            </a>
+                        </div>
+                        <div class="hero-apple-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">🛡️</span>
+                                <span class="feature-text">Sicuro</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">⚡</span>
+                                <span class="feature-text">Veloce</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">💎</span>
+                                <span class="feature-text">Premium</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Features Section -->
+<!-- Features Section per utenti non loggati -->
 {% if not current_user.is_authenticated %}
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-5"><i class="fas fa-star me-2"></i>Perché Scegliere Flask Market?</h2>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card bg-dark border-primary h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                <h5 class="card-title">Sicuro e Affidabile</h5>
-                <p class="card-text text-muted">Sistema di autenticazione robusto e transazioni sicure per tutti gli utenti.</p>
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="display-5 fw-bold mb-3">Perché Scegliere Flask Market?</h2>
+                <p class="lead text-muted">La piattaforma e-commerce più innovativa e sicura del mercato</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card border-0 text-center hover-lift">
+                    <div class="card-body p-5">
+                        <div class="bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">
+                            <i class="fas fa-shield-alt text-white" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Sicurezza Garantita</h4>
+                        <p class="text-muted">Sistema di protezione avanzato con crittografia end-to-end e moderazione 24/7 per garantire transazioni sicure.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 text-center hover-lift">
+                    <div class="card-body p-5">
+                        <div class="bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));">
+                            <i class="fas fa-rocket text-white" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Veloce & Intuitivo</h4>
+                        <p class="text-muted">Interface moderna e responsive. Compra e vendi in pochi click con la nostra tecnologia all'avanguardia.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 text-center hover-lift">
+                    <div class="card-body p-5">
+                        <div class="bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));">
+                            <i class="fas fa-users text-white" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Community Attiva</h4>
+                        <p class="text-muted">Unisciti a migliaia di venditori e compratori verificati. Rating e recensioni per garantire qualità.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card bg-dark border-success h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-rocket fa-3x text-success mb-3"></i>
-                <h5 class="card-title">Facile da Usare</h5>
-                <p class="card-text text-muted">Interface intuitiva e moderna per comprare e vendere in pochi click.</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card bg-dark border-warning h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-users fa-3x text-warning mb-3"></i>
-                <h5 class="card-title">Community Attiva</h5>
-                <p class="card-text text-muted">Unisciti a migliaia di utenti che comprano e vendono ogni giorno.</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 {% endif %}
 
 <!-- Stats Section per utenti loggati -->
 {% if current_user.is_authenticated %}
-<div class="row mb-5">
-    <div class="col-12">
-        <h3 class="text-center mb-4"><i class="fas fa-chart-pie me-2"></i>Il Tuo Status</h3>
-    </div>
-    
-    <div class="col-md-4 mb-3">
-        <div class="card bg-primary text-white text-center">
-            <div class="card-body">
-                <i class="fas fa-wallet fa-2x mb-2"></i>
-                <h4>{{ current_user.prettier_budget }}</h4>
-                <p class="mb-0">Saldo Disponibile</p>
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h3 class="display-6 fw-bold mb-3">Il Tuo Status nel Marketplace</h3>
+                <p class="lead text-muted">Panoramica delle tue attività e progressi</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stats-card hover-lift">
+                    <i class="fas fa-wallet text-primary"></i>
+                    <h4>{{ current_user.prettier_budget }}</h4>
+                    <p>Saldo Disponibile</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card success hover-lift">
+                    <i class="fas fa-box text-success"></i>
+                    <h4>{{ current_user.items|length }}</h4>
+                    <p>Prodotti Posseduti</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card warning hover-lift">
+                    <i class="fas fa-dollar-sign text-warning"></i>
+                    <h4>${{ current_user.items|sum(attribute='price') or 0 }}</h4>
+                    <p>Valore Inventario</p>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-4 mb-3">
-        <div class="card bg-success text-white text-center">
-            <div class="card-body">
-                <i class="fas fa-box fa-2x mb-2"></i>
-                <h4>{{ current_user.items|length }}</h4>
-                <p class="mb-0">Prodotti Posseduti</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4 mb-3">
-        <div class="card bg-info text-white text-center">
-            <div class="card-body">
-                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
-                <h4>${{ current_user.items|sum(attribute='price') or 0 }}</h4>
-                <p class="mb-0">Valore Inventario</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 {% endif %}
 
-<!-- Call to Action -->
-<div class="row">
-    <div class="col-12">
-        <div class="card bg-dark border-info">
-            <div class="card-body text-center p-5">
-                {% if current_user.is_authenticated %}
-                    <h3 class="text-info mb-3">Pronto per il prossimo acquisto?</h3>
-                    <p class="text-muted mb-4">Esplora i prodotti disponibili o aggiungi i tuoi per iniziare a vendere!</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ url_for('market') }}" class="btn btn-info btn-lg">
-                            <i class="fas fa-search me-2"></i>Esplora Market
-                        </a>
-                        <a href="{{ url_for('add_item') }}" class="btn btn-outline-info btn-lg">
-                            <i class="fas fa-plus me-2"></i>Vendi Prodotto
-                        </a>
+<!-- Call to Action Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 bg-gradient text-white" style="background: linear-gradient(135deg, var(--primary-900), var(--accent-blue));">
+                    <div class="card-body text-center py-5">
+                        {% if current_user.is_authenticated %}
+                            <h3 class="display-6 fw-bold mb-4">Pronto per il Prossimo Acquisto?</h3>
+                            <p class="lead mb-5">Esplora migliaia di prodotti di qualità o inizia a vendere i tuoi articoli nella nostra community fidata.</p>
+                            <div class="d-flex justify-content-center gap-4 flex-wrap">
+                                <a href="{{ url_for('market') }}" class="btn btn-light btn-lg hover-lift">
+                                    <i class="fas fa-search me-2"></i>Esplora Prodotti
+                                </a>
+                                <a href="{{ url_for('add_item') }}" class="btn btn-outline-light btn-lg hover-lift">
+                                    <i class="fas fa-plus me-2"></i>Vendi Prodotto
+                                </a>
+                            </div>
+                        {% else %}
+                            <h3 class="display-6 fw-bold mb-4">Inizia la Tua Avventura Oggi!</h3>
+                            <p class="lead mb-5">Registrati ora e ricevi <strong>$1,000 di credito gratuito</strong> per iniziare subito a comprare nella nostra piattaforma.</p>
+                            <div class="d-flex justify-content-center gap-4 flex-wrap">
+                                <a href="{{ url_for('register_page') }}" class="btn btn-light btn-lg hover-lift">
+                                    <i class="fas fa-gift me-2"></i>Registrati e Ricevi $1,000
+                                </a>
+                                <a href="{{ url_for('login_page') }}" class="btn btn-outline-light btn-lg hover-lift">
+                                    <i class="fas fa-user me-2"></i>Ho già un Account
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
-                {% else %}
-                    <h3 class="text-info mb-3">Inizia la Tua Avventura nel Marketplace!</h3>
-                    <p class="text-muted mb-4">Registrati ora e ricevi $1,000 di credito gratuito per iniziare a comprare!</p>
-                    <a href="{{ url_for('register_page') }}" class="btn btn-info btn-lg">
-                        <i class="fas fa-gift me-2"></i>Registrati e Ricevi $1,000
-                    </a>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
+<!-- Trust Indicators -->
 {% if not current_user.is_authenticated %}
-<!-- Quick Links -->
-<div class="row mt-5">
-    <div class="col-12 text-center">
-        <p class="text-muted">
-            Hai già un account? <a href="{{ url_for('login_page') }}" class="text-info">Accedi qui</a> • 
-            <a href="{{ url_for('contacts') }}" class="text-info">Contattaci</a>
-        </p>
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="text-muted mb-4">Trusted by thousands of users worldwide</p>
+                <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap opacity-75">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <span class="fw-semibold">4.9/5 Rating</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-shield-alt text-success"></i>
+                        <span class="fw-semibold">SSL Secured</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-clock text-info"></i>
+                        <span class="fw-semibold">24/7 Support</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-users text-primary"></i>
+                        <span class="fw-semibold">10K+ Users</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 {% endif %}
 
 {% endblock content %}

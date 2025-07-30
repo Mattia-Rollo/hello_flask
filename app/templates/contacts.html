@@ -1,12 +1,416 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-Contatti
+Contatti - Supporto Clienti 24/7 | Flask Market
 {% endblock%} 
 
 {% block content %}
 
-<h1>Contacts: {{name}} {{surname}}</h1>
-<a href="/">back</a>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Siamo qui per aiutarti</h1>
+                <p class="lead mb-4">Il nostro team di esperti è disponibile 24/7 per rispondere alle tue domande e supportarti in ogni fase del tuo shopping online.</p>
+                <div class="d-flex gap-3">
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="fas fa-clock me-2"></i>Supporto 24/7
+                    </span>
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-phone me-2"></i>Risposta immediata
+                    </span>
+                    <span class="badge bg-info fs-6 px-3 py-2">
+                        <i class="fas fa-globe me-2"></i>Supporto multilingue
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="position-relative">
+                    <div class="bg-gradient rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                         style="width: 200px; height: 200px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">
+                        <i class="fas fa-headset text-white" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Methods -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold mb-3">Come possiamo aiutarti?</h2>
+                <p class="text-muted">Scegli il canale di supporto più adatto alle tue esigenze</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Customer Service -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-user-tie text-primary fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Assistenza Clienti</h5>
+                        <p class="text-muted mb-4">Per ordini, resi, rimborsi e assistenza generale</p>
+                        <div class="mb-3">
+                            <a href="tel:+390212345678" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                <i class="fas fa-phone me-2"></i>+39 02 1234 5678
+                            </a>
+                            <a href="mailto:support@flaskmarket.com" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>support@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-success fw-bold">
+                            <i class="fas fa-clock me-1"></i>24/7 Disponibile
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Technical Support -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-tools text-success fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Supporto Tecnico</h5>
+                        <p class="text-muted mb-4">Per problemi con il sito, app mobile e pagamenti</p>
+                        <div class="mb-3">
+                            <a href="tel:+390212345679" class="btn btn-outline-success btn-sm mb-2 w-100">
+                                <i class="fas fa-phone me-2"></i>+39 02 1234 5679
+                            </a>
+                            <a href="mailto:tech@flaskmarket.com" class="btn btn-outline-success btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>tech@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-success fw-bold">
+                            <i class="fas fa-clock me-1"></i>Lun-Ven 9:00-18:00
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Business/Partnership -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-handshake text-warning fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Partnership</h5>
+                        <p class="text-muted mb-4">Per collaborazioni, venditori e partnership business</p>
+                        <div class="mb-3">
+                            <a href="tel:+390212345680" class="btn btn-outline-warning btn-sm mb-2 w-100">
+                                <i class="fas fa-phone me-2"></i>+39 02 1234 5680
+                            </a>
+                            <a href="mailto:business@flaskmarket.com" class="btn btn-outline-warning btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>business@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-success fw-bold">
+                            <i class="fas fa-clock me-1"></i>Lun-Ven 9:00-17:00
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Press/Media -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-newspaper text-info fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Ufficio Stampa</h5>
+                        <p class="text-muted mb-4">Per giornalisti, media e richieste comunicati stampa</p>
+                        <div class="mb-3">
+                            <a href="mailto:press@flaskmarket.com" class="btn btn-outline-info btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>press@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-muted fw-bold">
+                            <i class="fas fa-clock me-1"></i>Lun-Ven 9:00-17:00
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Careers -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-users text-purple fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Risorse Umane</h5>
+                        <p class="text-muted mb-4">Per candidature, stage e opportunità di carriera</p>
+                        <div class="mb-3">
+                            <a href="mailto:hr@flaskmarket.com" class="btn btn-outline-purple btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>hr@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-muted fw-bold">
+                            <i class="fas fa-clock me-1"></i>Lun-Ven 9:00-17:00
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Legal -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-dark bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-balance-scale text-dark fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Ufficio Legale</h5>
+                        <p class="text-muted mb-4">Per questioni legali, copyright e conformità</p>
+                        <div class="mb-3">
+                            <a href="mailto:legal@flaskmarket.com" class="btn btn-outline-dark btn-sm w-100">
+                                <i class="fas fa-envelope me-2"></i>legal@flaskmarket.com
+                            </a>
+                        </div>
+                        <small class="text-muted fw-bold">
+                            <i class="fas fa-clock me-1"></i>Lun-Ven 9:00-17:00
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-3">Inviaci un messaggio</h2>
+                    <p class="text-muted">Compila il form sottostante e ti risponderemo entro 2 ore durante gli orari lavorativi</p>
+                </div>
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <form action="#" method="POST" novalidate>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label fw-bold">Nome *</label>
+                                    <input type="text" class="form-control form-control-lg" id="firstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label fw-bold">Cognome *</label>
+                                    <input type="text" class="form-control form-control-lg" id="lastName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-bold">Email *</label>
+                                    <input type="email" class="form-control form-control-lg" id="email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label fw-bold">Telefono</label>
+                                    <input type="tel" class="form-control form-control-lg" id="phone">
+                                </div>
+                                <div class="col-12">
+                                    <label for="department" class="form-label fw-bold">Dipartimento *</label>
+                                    <select class="form-select form-select-lg" id="department" required>
+                                        <option value="">Seleziona un dipartimento</option>
+                                        <option value="support">Assistenza Clienti</option>
+                                        <option value="technical">Supporto Tecnico</option>
+                                        <option value="business">Partnership & Business</option>
+                                        <option value="press">Ufficio Stampa</option>
+                                        <option value="hr">Risorse Umane</option>
+                                        <option value="legal">Ufficio Legale</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="subject" class="form-label fw-bold">Oggetto *</label>
+                                    <input type="text" class="form-control form-control-lg" id="subject" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label fw-bold">Messaggio *</label>
+                                    <textarea class="form-control" id="message" rows="6" placeholder="Descrivi la tua richiesta in dettaglio..." required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="privacy" required>
+                                        <label class="form-check-label" for="privacy">
+                                            Accetto la <a href="#" class="text-primary">Privacy Policy</a> e i <a href="#" class="text-primary">Termini di Servizio</a> *
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="fas fa-paper-plane me-2"></i>Invia Messaggio
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Company Info -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Headquarters -->
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" 
+                         style="width: 80px; height: 80px;">
+                        <i class="fas fa-building text-primary fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Sede Principale</h4>
+                    <address class="text-muted lh-lg">
+                        <strong>Flask Market S.p.A.</strong><br>
+                        Via Giuseppe Verdi, 42<br>
+                        20121 Milano, Italia<br>
+                        <br>
+                        <strong>P.IVA:</strong> 12345678901<br>
+                        <strong>REA:</strong> MI-1234567
+                    </address>
+                </div>
+            </div>
+            
+            <!-- Operating Hours -->
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" 
+                         style="width: 80px; height: 80px;">
+                        <i class="fas fa-clock text-success fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Orari di Supporto</h4>
+                    <div class="text-muted lh-lg">
+                        <div class="mb-2">
+                            <strong>Assistenza Clienti:</strong><br>
+                            <span class="text-success fw-bold">24/7 - Sempre disponibili</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Supporto Tecnico:</strong><br>
+                            Lun-Ven: 9:00 - 18:00<br>
+                            Sab: 10:00 - 16:00
+                        </div>
+                        <div>
+                            <strong>Uffici:</strong><br>
+                            Lun-Ven: 9:00 - 17:00
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media -->
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" 
+                         style="width: 80px; height: 80px;">
+                        <i class="fas fa-share-alt text-info fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Seguici sui Social</h4>
+                    <p class="text-muted mb-4">Resta aggiornato con le ultime novità, offerte e annunci</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-sm">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Quick -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="fw-bold mb-3">Domande Frequenti</h2>
+                <p class="text-muted">Le risposte alle domande più comuni dei nostri clienti</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-primary mb-3">
+                            <i class="fas fa-shipping-fast me-2"></i>Spedizioni e consegne
+                        </h5>
+                        <p class="text-muted mb-3">Spediamo in tutta Italia con corriere espresso. Consegna gratuita per ordini superiori a €50.</p>
+                        <a href="#" class="text-primary fw-bold">Scopri di più →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-success mb-3">
+                            <i class="fas fa-undo me-2"></i>Resi e rimborsi
+                        </h5>
+                        <p class="text-muted mb-3">Reso gratuito entro 30 giorni dall'acquisto. Rimborso completo garantito.</p>
+                        <a href="#" class="text-success fw-bold">Politica resi →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-warning mb-3">
+                            <i class="fas fa-credit-card me-2"></i>Pagamenti sicuri
+                        </h5>
+                        <p class="text-muted mb-3">Accettiamo tutte le carte di credito, PayPal e bonifico bancario. Transazioni protette SSL.</p>
+                        <a href="#" class="text-warning fw-bold">Metodi pagamento →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-info mb-3">
+                            <i class="fas fa-user-shield me-2"></i>Account e privacy
+                        </h5>
+                        <p class="text-muted mb-3">I tuoi dati sono protetti secondo GDPR. Gestisci facilmente il tuo account e le preferenze.</p>
+                        <a href="#" class="text-info fw-bold">Privacy Policy →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="#" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-question-circle me-2"></i>Visualizza tutte le FAQ
+            </a>
+        </div>
+    </div>
+</section>
 
 {% endblock content %}

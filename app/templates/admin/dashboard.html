@@ -79,7 +79,7 @@ Admin Dashboard - Flask Market
     
     <!-- Prodotti Flaggati -->
     <div class="col-lg-8 mb-4">
-        <div class="card bg-dark border-danger">
+        <div class="card border-0">
             <div class="card-header bg-danger">
                 <h5 class="mb-0 text-white">
                     <i class="fas fa-exclamation-triangle me-2"></i>Prodotti da Moderare ({{ flagged_items }})
@@ -88,7 +88,7 @@ Admin Dashboard - Flask Market
             <div class="card-body">
                 {% if flagged_products %}
                     <div class="table-responsive">
-                        <table class="table table-dark table-striped">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Prodotto</th>
