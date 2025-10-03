@@ -1,40 +1,373 @@
 {% extends 'base.html' %} 
 
 {% block title%} 
-Register Page
+Registrati - La Casa
 {% endblock%} 
 
 {% block content %}
 
-<h1 class="text-center">Register form</h1>
+<!-- Clean Register Section -->
+<div class="container-fluid" style="background: #f8f9fa; min-height: 100vh;">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        
+        <!-- Simple Register Card -->
+        <div class="card shadow-sm border-0">
+          
+          <!-- Card Header -->
+          <div class="card-header bg-white text-center py-4 border-0">
+            <div class="mb-3">
+              <i class="fas fa-user-plus text-primary" style="font-size: 2.5rem;"></i>
+            </div>
+            <h2 class="mb-2 text-dark" style="font-weight: 600; font-size: 1.5rem;">Crea Account</h2>
+            <p class="text-muted mb-0">Compila i campi per registrarti</p>
+          </div>
+          
+          <!-- Card Body -->
+          <div class="card-body p-4">
+            <form method="POST" novalidate id="registerForm">
+              {{ form.hidden_tag() }}
+              
+              <!-- Username Field -->
+              <div class="mb-3">
+                <label for="{{ form.username.id }}" class="form-label text-dark">
+                  Username
+                </label>
+                {{ form.username(class="form-control", placeholder="Inserisci il tuo username") }}
+                {% if form.username.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.username.errors %}
+                      <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Email Field -->
+              <div class="mb-3">
+                <label for="{{ form.email_address.id }}" class="form-label text-dark">
+                  Email
+                </label>
+                {{ form.email_address(class="form-control", placeholder="Inserisci la tua email") }}
+                {% if form.email_address.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.email_address.errors %}
+                      <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Password Field -->
+              <div class="mb-3">
+                <label for="{{ form.password1.id }}" class="form-label text-dark">
+                  Password
+                </label>
+                <div class="input-group">
+                  {{ form.password1(class="form-control", placeholder="Inserisci la tua password") }}
+                  <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('password1')">
+                    <i class="fas fa-eye" id="toggleIcon1"></i>
+                  </button>
+                </div>
+                <div id="password1-error-container"></div>
+                {% if form.password1.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.password1.errors %}
+                      <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Confirm Password Field -->
+              <div class="mb-4">
+                <label for="{{ form.password2.id }}" class="form-label text-dark">
+                  Conferma Password
+                </label>
+                <div class="input-group">
+                  {{ form.password2(class="form-control", placeholder="Conferma la tua password") }}
+                  <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('password2')">
+                    <i class="fas fa-eye" id="toggleIcon2"></i>
+                  </button>
+                </div>
+                <div id="password2-error-container"></div>
+                {% if form.password2.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.password2.errors %}
+                      <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Terms and Conditions -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                  <label class="form-check-label text-muted" for="termsCheck">
+                    Accetto i <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#termsModal">termini e condizioni</a>
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Submit Button -->
+              <div class="d-grid mb-3">
+                {{ form.submit(class="btn btn-primary btn-lg") }}
+              </div>
+              
+              <!-- Login Link -->
+              <div class="text-center">
+                <p class="text-muted mb-0">
+                  Hai già un account? 
+                  <a href="{{ url_for('login_page') }}" class="text-decoration-none text-primary">
+                    Accedi
+                  </a>
+                </p>
+              </div>
+              
+            </form>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Termini e Condizioni</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>1. Accettazione dei Termini</h6>
+        <p>Utilizzando il nostro servizio, accetti di essere vincolato da questi termini e condizioni. Se non accetti questi termini, non utilizzare il nostro servizio.</p>
+        
+        <h6>2. Descrizione del Servizio</h6>
+        <p>La Casa è una piattaforma e-commerce che consente agli utenti di acquistare e vendere prodotti online. Il servizio include funzionalità di marketplace, gestione account utente e transazioni sicure.</p>
+        
+        <h6>3. Registrazione e Account</h6>
+        <p>Per utilizzare il nostro servizio, devi creare un account fornendo informazioni accurate e aggiornate. Sei responsabile della sicurezza del tuo account e password. Accetti di notificarci immediatamente di qualsiasi uso non autorizzato del tuo account.</p>
+        
+        <h6>4. Condizioni di Vendita</h6>
+        <p>I venditori sono responsabili della descrizione accurata dei prodotti, dei prezzi e delle condizioni di vendita. I prezzi sono espressi in euro e includono l'IVA dove applicabile. La Casa si riserva il diritto di rimuovere prodotti che violano le nostre politiche.</p>
+        
+        <h6>5. Pagamenti e Rimborsi</h6>
+        <p>I pagamenti vengono elaborati tramite metodi sicuri. I rimborsi sono soggetti alle nostre politiche di rimborso e possono richiedere fino a 14 giorni lavorativi per essere processati.</p>
+        
+        <h6>6. Privacy e Protezione Dati</h6>
+        <p>Rispettiamo la tua privacy e proteggiamo i tuoi dati personali secondo il GDPR. I tuoi dati vengono utilizzati solo per fornire il servizio e migliorare l'esperienza utente. Non vendiamo i tuoi dati a terze parti.</p>
+        
+        <h6>7. Limitazioni di Responsabilità</h6>
+        <p>La Casa non è responsabile per danni indiretti, incidentali o consequenziali derivanti dall'uso del servizio. La nostra responsabilità è limitata all'importo pagato per il servizio.</p>
+        
+        <h6>8. Modifiche ai Termini</h6>
+        <p>Ci riserviamo il diritto di modificare questi termini in qualsiasi momento. Le modifiche entreranno in vigore immediatamente dopo la pubblicazione. L'uso continuato del servizio costituisce accettazione delle modifiche.</p>
+        
+        <h6>9. Legge Applicabile</h6>
+        <p>Questi termini sono regolati dalla legge italiana. Qualsiasi controversia sarà risolta dai tribunali competenti di Roma.</p>
+        
+        <h6>10. Contatti</h6>
+        <p>Per domande sui termini e condizioni, contattaci all'indirizzo: <strong>info@lacasa.it</strong></p>
+        
+        <div class="alert alert-info mt-3">
+          <small><strong>Nota:</strong> Questi termini sono stati aggiornati l'ultima volta il 1° gennaio 2024.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="acceptTerms()">Accetto</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<form method="POST" class="form-register w-50 text-center m-auto" novalidate>
+<!-- JavaScript per funzionalità interattive -->
+<script>
+// Toggle password visibility for multiple fields
+function togglePassword(fieldName) {
+  const passwordField = document.querySelector(`input[name="${fieldName}"]`);
+  const toggleIcon = document.getElementById(`toggleIcon${fieldName === 'password1' ? '1' : '2'}`);
+  
+  // Prevent validation when toggling
+  passwordField.setAttribute('data-toggling', 'true');
+  
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    toggleIcon.classList.remove('fa-eye');
+    toggleIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordField.type = 'password';
+    toggleIcon.classList.remove('fa-eye-slash');
+    toggleIcon.classList.add('fa-eye');
+  }
+  
+  // Remove the flag after a short delay
+  setTimeout(() => {
+    passwordField.removeAttribute('data-toggling');
+  }, 100);
+}
+
+// Form validation and UX enhancements
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('registerForm');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const inputs = form.querySelectorAll('input[type="text"], input[type="password"], input[type="email"]');
+  
+  // Validation only on blur (when user finishes typing)
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      // Don't validate if user is just toggling password visibility
+      if (this.getAttribute('data-toggling') === 'true') {
+        return;
+      }
+      validateField(this);
+    });
+  });
+  
+  // Form submission with loading state
+  form.addEventListener('submit', function(e) {
+    if (validateForm()) {
+      showLoadingState();
+    }
+  });
+  
+  function validateField(field) {
+    const value = field.value.trim();
+    const fieldName = field.name;
+    let isValid = true;
+    let errorMessage = '';
     
-    {{ form.hidden_tag() }}
-   
-    {{ form.username.label(class='form-label pt-3') }}
-    {{ form.username(class="form-control", placeholder="username") }}
+    // Remove existing error styling
+    field.classList.remove('is-invalid');
+    const existingError = field.parentNode.querySelector('.field-error');
+    if (existingError) {
+      existingError.remove();
+    }
     
-    {{ form.email_address.label(class='form-label pt-3') }}
-    {{ form.email_address(class="form-control", placeholder="Email") }}
-   
-    {{ form.password1.label(class='form-label pt-3') }}
-    {{ form.password1(class="form-control", placeholder="Password") }}
+    // Validation rules
+    if (fieldName === 'username') {
+      if (value.length === 0) {
+        isValid = false;
+        errorMessage = 'Username è richiesto';
+      } else if (value.length < 3) {
+        isValid = false;
+        errorMessage = 'Username deve essere di almeno 3 caratteri';
+      }
+    } else if (fieldName === 'email_address') {
+      if (value.length === 0) {
+        isValid = false;
+        errorMessage = 'Email è richiesta';
+      } else if (!isValidEmail(value)) {
+        isValid = false;
+        errorMessage = 'Inserisci un indirizzo email valido';
+      }
+    } else if (fieldName === 'password1') {
+      if (value.length === 0) {
+        isValid = false;
+        errorMessage = 'Password è richiesta';
+      } else if (value.length < 6) {
+        isValid = false;
+        errorMessage = 'Password deve essere di almeno 6 caratteri';
+      }
+    } else if (fieldName === 'password2') {
+      const password1 = document.querySelector('input[name="password1"]').value;
+      if (value.length === 0) {
+        isValid = false;
+        errorMessage = 'Conferma password è richiesta';
+      } else if (value !== password1) {
+        isValid = false;
+        errorMessage = 'Le password non coincidono';
+      }
+    }
     
-    {{ form.password2.label(class='form-label pt-3') }}
-    {{ form.password2(class="form-control", placeholder="Confirm Password") }}
-
-   
+    // Show error if invalid
+    if (!isValid) {
+      field.classList.add('is-invalid');
+      showFieldError(field, errorMessage);
+    } else {
+      field.classList.add('is-valid');
+    }
     
-    {{ form.submit(class='btn btn-primary my-3 w-100')}}
-   
-     <div>Already have an account?</div>
-    <div><a class="btn btn-secondary my-2" href="{{ url_for('login_page')}}">Login</a></div>
-</form>
+    return isValid;
+  }
+  
+  function validateForm() {
+    let isFormValid = true;
+    inputs.forEach(input => {
+      if (!validateField(input)) {
+        isFormValid = false;
+      }
+    });
+    return isFormValid;
+  }
+  
+  function showFieldError(field, message) {
+    // Remove existing error
+    const existingError = field.parentNode.querySelector('.field-error');
+    if (existingError) {
+      existingError.remove();
+    }
+    
+    // For password fields, use specific containers
+    let container;
+    if (field.name === 'password1') {
+      container = document.getElementById('password1-error-container');
+    } else if (field.name === 'password2') {
+      container = document.getElementById('password2-error-container');
+    } else {
+      container = field.parentNode;
+    }
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error text-danger mt-1';
+    errorDiv.style.fontSize = '0.875rem';
+    errorDiv.textContent = message;
+    container.appendChild(errorDiv);
+  }
+  
+  function showLoadingState() {
+    form.classList.add('form-loading');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrazione in corso...';
+  }
+  
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+});
 
-<!-- {{ form.username }} -->
+// Accept terms function
+function acceptTerms() {
+  const termsCheckbox = document.getElementById('termsCheck');
+  termsCheckbox.checked = true;
+  termsCheckbox.dispatchEvent(new Event('change'));
+}
 
-
+// Add CSS for focus effects
+const style = document.createElement('style');
+style.textContent = `
+  .is-valid {
+    border-color: #198754 !important;
+  }
+  
+  .is-invalid {
+    border-color: #dc3545 !important;
+    animation: errorShake 0.5s ease-in-out;
+  }
+  
+  .form-loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+`;
+document.head.appendChild(style);
+</script>
 
 {% endblock content %}
