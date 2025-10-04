@@ -179,9 +179,7 @@ def add_item():
             flash(f"Prodotto {item_to_create.name} aggiunto al market con successo!", category="success")
             return redirect(url_for('market'))
     
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(err_msg[0], category="danger")
+    # Errori ora gestiti lato client con validazione in tempo reale
     
     return render_template("add_item.html", form=form)
 

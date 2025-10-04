@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Semplice CSS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-ecommerce.css">
+</head>
+<body>
+    <div class="container py-5">
+        <h1>🧪 Test CSS Semplice</h1>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Campo Normale</h5>
+                <input type="text" class="form-control form-control-lg" placeholder="Campo normale" id="normal">
+                <div class="form-text">Campo senza validazione</div>
+            </div>
+            
+            <div class="col-md-4">
+                <h5>Campo Valido (Verde)</h5>
+                <input type="text" class="form-control form-control-lg is-valid" placeholder="Campo valido" id="valid" value="Testo valido">
+                <div class="valid-feedback">
+                    <i class="fas fa-check me-1"></i>Tutto ok!
+                </div>
+                <div class="form-text">Campo con is-valid</div>
+            </div>
+            
+            <div class="col-md-4">
+                <h5>Campo Invalido (Rosso)</h5>
+                <input type="text" class="form-control form-control-lg is-invalid" placeholder="Campo invalido" id="invalid" value="Errore">
+                <div class="invalid-feedback">
+                    ❌ Questo campo ha un errore!
+                </div>
+                <div class="form-text">Campo con is-invalid</div>
+            </div>
+        </div>
+        
+        <hr class="my-5">
+        
+        <h3>🎮 Test Dinamico</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Test Input</label>
+                <input type="text" class="form-control form-control-lg" id="testInput" placeholder="Scrivi qualcosa...">
+                <div class="invalid-feedback d-none" id="errorMsg">Campo vuoto!</div>
+                <div class="valid-feedback d-none" id="successMsg">
+                    <i class="fas fa-check me-1"></i>Perfetto!
+                </div>
+                <div class="form-text">Scrivi almeno 3 caratteri</div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <button class="btn btn-primary me-2" onclick="makeValid()">✅ Rendi Valido</button>
+                <button class="btn btn-danger me-2" onclick="makeInvalid()">❌ Rendi Invalido</button>
+                <button class="btn btn-secondary" onclick="makeNormal()">🔄 Reset</button>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h5>🔍 Debug Info:</h5>
+            <div id="debugInfo" class="border p-3 bg-light"></div>
+        </div>
+    </div>
+
+    <script>
+        const testInput = document.getElementById('testInput');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
+        const debugInfo = document.getElementById('debugInfo');
+        
+        function updateDebug() {
+            const classes = Array.from(testInput.classList);
+            const errorVisible = !errorMsg.classList.contains('d-none');
+            const successVisible = !successMsg.classList.contains('d-none');
+            
+            debugInfo.innerHTML = `
+                <strong>Input Classes:</strong> ${classes.join(', ')}<br>
+                <strong>Error Visible:</strong> ${errorVisible}<br>
+                <strong>Success Visible:</strong> ${successVisible}<br>
+                <strong>Input Value:</strong> "${testInput.value}"
+            `;
+        }
+        
+        function makeValid() {
+            console.log('🟢 Making valid...');
+            testInput.classList.remove('is-invalid');
+            testInput.classList.add('is-valid');
+            errorMsg.classList.add('d-none');
+            successMsg.classList.remove('d-none');
+            testInput.value = 'Testo valido';
+            updateDebug();
+        }
+        
+        function makeInvalid() {
+            console.log('🔴 Making invalid...');
+            testInput.classList.remove('is-valid');
+            testInput.classList.add('is-invalid');
+            successMsg.classList.add('d-none');
+            errorMsg.classList.remove('d-none');
+            testInput.value = 'X';
+            updateDebug();
+        }
+        
+        function makeNormal() {
+            console.log('⚪ Making normal...');
+            testInput.classList.remove('is-valid', 'is-invalid');
+            errorMsg.classList.add('d-none');
+            successMsg.classList.add('d-none');
+            testInput.value = '';
+            updateDebug();
+        }
+        
+        // Auto validation on input
+        testInput.addEventListener('input', function() {
+            console.log('📝 Input changed:', this.value);
+            if (this.value.length >= 3) {
+                makeValid();
+            } else if (this.value.length > 0) {
+                makeInvalid();
+            } else {
+                makeNormal();
+            }
+        });
+        
+        // Initialize
+        updateDebug();
+        
+        console.log('🚀 Test semplice caricato');
+    </script>
+</body>
+</html> 

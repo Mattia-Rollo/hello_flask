@@ -34,15 +34,27 @@ Vendi il Tuo Prodotto | Flask Market
                         <p class="text-muted mb-0 mt-1">Inserisci le informazioni del tuo prodotto</p>
                     </div>
                     <div class="card-body p-4">
+                        <!-- FORM FLASK-WTF: Tutti i campi vengono dalla classe AddItemForm in app/forms.py -->
+                        <!-- Per modificare etichette, validazioni, opzioni: modifica il file forms.py -->
+                        <!-- form.hidden_tag() genera il token CSRF per la sicurezza -->
                         <form method="POST" enctype="multipart/form-data" novalidate id="productForm">
                             {{ form.hidden_tag() }}
                             
                             <!-- Product Name -->
+                            <!-- NOTA: Le etichette dei campi (es. "Nome Prodotto:") vengono dal file app/forms.py -->
+                            <!-- Classe AddItemForm, campo: name = StringField(label='Nome Prodotto:', ...) -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-tag me-2 text-primary"></i>{{ form.name.label.text }}
+                                    <span class="text-danger">*</span>
                                 </label>
-                                {{ form.name(class="form-control form-control-lg", placeholder="es. iPhone 15 Pro, MacBook Air M2, Nike Air Max...") }}
+                                {{ form.name(class="form-control form-control-lg", placeholder="es. iPhone 15 Pro, MacBook Air M2, Nike Air Max...", id="field-name") }}
+                                <div class="invalid-feedback d-none" id="error-name">
+                                    Errore nome
+                                </div>
+                                <div class="valid-feedback d-none" id="success-name">
+                                    <i class="fas fa-check me-1"></i>Nome perfetto!
+                                </div>
                                 <div class="form-text">Un nome accattivante aiuta a vendere meglio il prodotto</div>
                             </div>
 
@@ -51,18 +63,32 @@ Vendi il Tuo Prodotto | Flask Market
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-dollar-sign me-2 text-success"></i>{{ form.price.label.text }}
+                                        <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-text bg-success text-white">$</span>
-                                        {{ form.price(class="form-control", placeholder="999") }}
+                                        {{ form.price(class="form-control", placeholder="999", id="field-price") }}
+                                    </div>
+                                    <div class="invalid-feedback d-none" id="error-price">
+                                        Errore prezzo
+                                    </div>
+                                    <div class="valid-feedback d-none" id="success-price">
+                                        <i class="fas fa-check me-1"></i>Prezzo valido!
                                     </div>
                                     <div class="form-text">Prezzo competitivo per una vendita veloce</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">
                                         <i class="fas fa-barcode me-2 text-info"></i>{{ form.barcode.label.text }}
+                                        <span class="text-danger">*</span>
                                     </label>
-                                    {{ form.barcode(class="form-control form-control-lg", placeholder="123456789012") }}
+                                    {{ form.barcode(class="form-control form-control-lg", placeholder="123456789012", id="field-barcode") }}
+                                    <div class="invalid-feedback d-none" id="error-barcode">
+                                        Errore codice
+                                    </div>
+                                    <div class="valid-feedback d-none" id="success-barcode">
+                                        <i class="fas fa-check me-1"></i>Codice valido!
+                                    </div>
                                     <div class="form-text">Esattamente 12 caratteri numerici</div>
                                 </div>
                             </div>
@@ -96,14 +122,24 @@ Vendi il Tuo Prodotto | Flask Market
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-align-left me-2 text-primary"></i>{{ form.description.label.text }}
+                                    <span class="text-danger">*</span>
                                 </label>
-                                {{ form.description(class="form-control", rows="5", placeholder="Descrivi il tuo prodotto in dettaglio: caratteristiche, stato di conservazione, motivo della vendita, accessori inclusi...") }}
+                                {{ form.description(class="form-control", rows="5", placeholder="Descrivi il tuo prodotto in dettaglio: caratteristiche, stato di conservazione, motivo della vendita, accessori inclusi...", id="field-description") }}
+                                <div class="invalid-feedback d-none" id="error-description">
+                                    Errore descrizione
+                                </div>
+                                <div class="valid-feedback d-none" id="success-description">
+                                    <i class="fas fa-check me-1"></i>Descrizione completa!
+                                </div>
                                 <div class="form-text">
                                     <span id="charCount">0</span>/1000 caratteri - Una descrizione dettagliata aumenta le vendite
                                 </div>
                             </div>
 
                             <!-- Image Upload -->
+                            <!-- NOTA: L'etichetta "Immagine Prodotto:" viene da app/forms.py -->
+                            <!-- Classe AddItemForm, campo: image = FileField(label='Immagine Prodotto:', ...) -->
+                            <!-- Per modificare il testo, cambia il 'label' nel file forms.py -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-camera me-2 text-success"></i>{{ form.image.label.text }}
@@ -256,78 +292,182 @@ Vendi il Tuo Prodotto | Flask Market
     </div>
 </section>
 
-<!-- JavaScript for Enhanced UX -->
+<!-- VALIDAZIONE SEMPLIFICATA -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const imageInput = document.getElementById('imageInput');
-    const uploadArea = document.getElementById('imageUploadArea');
-    const uploadContent = uploadArea.querySelector('.upload-content');
-    const previewContainer = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
-    const descriptionTextarea = document.querySelector('textarea[name="description"]');
-    const charCount = document.getElementById('charCount');
-
-    // Character counter for description
-    if (descriptionTextarea && charCount) {
-        descriptionTextarea.addEventListener('input', function() {
-            charCount.textContent = this.value.length;
-            if (this.value.length > 800) {
-                charCount.classList.add('text-warning');
+    console.log('🚀 Validazione semplificata avviata');
+    
+    // Campi da validare con i loro ID univoci
+    const fields = {
+        'name': {
+            id: 'field-name',
+            errorId: 'error-name', 
+            successId: 'success-name',
+            required: true,
+            validate: (val) => val.length >= 2 ? null : 'Min 2 caratteri'
+        },
+        'price': {
+            id: 'field-price',
+            errorId: 'error-price',
+            successId: 'success-price', 
+            required: true,
+            validate: (val) => {
+                const n = parseFloat(val);
+                if (isNaN(n) || n < 1) return 'Min $1';
+                if (n > 10000) return 'Max $10,000';
+                return null;
+            }
+        },
+        'barcode': {
+            id: 'field-barcode',
+            errorId: 'error-barcode',
+            successId: 'success-barcode',
+            required: true, 
+            validate: (val) => /^\d{12}$/.test(val) ? null : 'Esattamente 12 cifre'
+        },
+        'description': {
+            id: 'field-description',
+            errorId: 'error-description',
+            successId: 'success-description',
+            required: true,
+            validate: (val) => val.length >= 10 ? null : 'Min 10 caratteri'
+        }
+    };
+    
+    // Funzione per aggiornare un campo
+    function updateField(fieldName, isValid, errorMsg = '') {
+        const field = fields[fieldName];
+        const input = document.getElementById(field.id);
+        const errorDiv = document.getElementById(field.errorId);
+        const successDiv = document.getElementById(field.successId);
+        
+        if (!input) return;
+        
+        // Reset
+        input.classList.remove('is-valid', 'is-invalid');
+        if (errorDiv) {
+            errorDiv.classList.add('d-none');
+            errorDiv.textContent = '';
+        }
+        if (successDiv) successDiv.classList.add('d-none');
+        
+        // Applica stato
+        if (input.value.trim() !== '') {
+            if (isValid) {
+                input.classList.add('is-valid');
+                if (successDiv) successDiv.classList.remove('d-none');
             } else {
-                charCount.classList.remove('text-warning');
+                input.classList.add('is-invalid');
+                if (errorDiv) {
+                    errorDiv.textContent = errorMsg;
+                    errorDiv.classList.remove('d-none');
+                }
+            }
+        }
+    }
+    
+    // Setup validazione per ogni campo
+    Object.keys(fields).forEach(fieldName => {
+        const field = fields[fieldName];
+        const input = document.getElementById(field.id);
+        
+        if (input) {
+            input.addEventListener('input', function() {
+                const error = field.validate(this.value);
+                updateField(fieldName, error === null, error);
+                
+                // Contatore caratteri per descrizione
+                if (fieldName === 'description') {
+                    const counter = document.getElementById('charCount');
+                    if (counter) counter.textContent = this.value.length;
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (this.value.trim() !== '') {
+                    const error = field.validate(this.value);
+                    updateField(fieldName, error === null, error);
+                }
+            });
+        }
+    });
+    
+    // Submit validation
+    const form = document.getElementById('productForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let allValid = true;
+            const errors = [];
+            
+            // Valida tutti i campi
+            Object.keys(fields).forEach(fieldName => {
+                const field = fields[fieldName];
+                const input = document.getElementById(field.id);
+                
+                if (input) {
+                    const error = field.validate(input.value);
+                    const isValid = error === null;
+                    
+                    updateField(fieldName, isValid, error);
+                    
+                    if (!isValid) {
+                        allValid = false;
+                        errors.push(error);
+                    }
+                }
+            });
+            
+                         if (allValid) {
+                 // Submit ok
+                 const btn = form.querySelector('button[type="submit"]');
+                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Pubblicando...';
+                 btn.disabled = true;
+                 
+                 // Toast di conferma
+                 if (typeof window.toast !== 'undefined') {
+                     window.toast.info('🚀 Pubblicazione in corso...');
+                 }
+                 
+                 setTimeout(() => form.submit(), 100);
+             } else {
+                 // Toast di errore moderno
+                 if (typeof window.toast !== 'undefined') {
+                     window.toast.error(`❌ Correggi ${errors.length} errori nei campi obbligatori`);
+                 }
+                 
+                 // Focus primo campo invalido
+                 const firstInvalid = form.querySelector('.is-invalid');
+                 if (firstInvalid) firstInvalid.focus();
+             }
+        });
+    }
+    
+    // Image upload semplificato
+    const imageInput = document.getElementById('imageInput');
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('previewImg');
+                        const uploadContent = document.querySelector('.upload-content');
+                        const previewContainer = document.getElementById('imagePreview');
+                        
+                        if (preview && uploadContent && previewContainer) {
+                            preview.src = e.target.result;
+                            uploadContent.classList.add('d-none');
+                            previewContainer.classList.remove('d-none');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         });
     }
-
-    // Image upload functionality
-    function handleImagePreview(file) {
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                uploadContent.classList.add('d-none');
-                previewContainer.classList.remove('d-none');
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // File input change
-    imageInput.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            handleImagePreview(this.files[0]);
-        }
-    });
-
-    // Drag and drop functionality
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        this.classList.add('dragover');
-    });
-
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        this.classList.remove('dragover');
-    });
-
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        this.classList.remove('dragover');
-        
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            imageInput.files = files;
-            handleImagePreview(files[0]);
-        }
-    });
-
-    // Form validation enhancement
-    const form = document.getElementById('productForm');
-    form.addEventListener('submit', function(e) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Pubblicando...';
-        submitBtn.disabled = true;
-    });
 });
 
 function removeImage() {
@@ -335,9 +475,9 @@ function removeImage() {
     const uploadContent = document.querySelector('.upload-content');
     const previewContainer = document.getElementById('imagePreview');
     
-    imageInput.value = '';
-    uploadContent.classList.remove('d-none');
-    previewContainer.classList.add('d-none');
+    if (imageInput) imageInput.value = '';
+    if (uploadContent) uploadContent.classList.remove('d-none');
+    if (previewContainer) previewContainer.classList.add('d-none');
 }
 </script>
 
